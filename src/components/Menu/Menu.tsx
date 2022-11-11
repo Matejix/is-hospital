@@ -5,11 +5,23 @@ function Menu() {
     <>
       <ul>
         <li>
-          <StyledNavLink text="Home" link="/" />
+          <StyledNavLink text="Späť" link="/app" />
         </li>
 
         <li>
-          <StyledNavLink text="Medicaments" link="/medicaments" />
+          <StyledNavLink text="Lekarsky predpis" link="recipe" />
+        </li>
+        <li>
+          <StyledNavLink text="Správa pacientov" link="patientService" />
+        </li>
+        <li>
+          <StyledNavLink text="Rozpis služieb" link="schedule" />
+        </li>
+        <li>
+          <StyledNavLink text="Hospitalizacia" link="hospitalization" />
+        </li>
+        <li>
+          <StyledNavLink text="Žiadanka" link="requester" />
         </li>
       </ul>
     </>
@@ -24,6 +36,13 @@ type Props = {
 };
 
 function StyledNavLink({ text, link }: Props) {
+  if (link.includes("app")) {
+    return (
+      <NavLink className="" to={link}>
+        {text}
+      </NavLink>
+    );
+  }
   return (
     <NavLink className="[&.active]:text-red-500" to={link}>
       {text}

@@ -1,4 +1,4 @@
-import { TextInput, Button, Text, Anchor, Title } from "@mantine/core";
+import { TextInput, Button, Text, Anchor, Title, Select } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { Link } from "react-router-dom";
 
@@ -8,15 +8,18 @@ function Register() {
       username: "",
       password: "",
       confirmPass: "",
+      type: "",
     },
 
     validate: {
+      type: (value) => (Boolean(value) ? null : "Choose type"),
       username: (value) => (Boolean(value) ? null : "Invalid username"),
       password: (value) => (Boolean(value) ? null : "Invalid password"),
       confirmPass: (value, { password }) =>
         password === value ? null : "Password do not match",
     },
   });
+
   return (
     <div className="w-full min-h-screen flex items-center justify-center">
       <div className="max-w-md w-full bg-indigo-50 border-2 border-indigo-300 rounded-md p-8">
@@ -31,6 +34,15 @@ function Register() {
           Registration
         </Title>
         <form onSubmit={form.onSubmit((values) => console.log(values))}>
+          <Select
+            style={{ marginTop: 20, zIndex: 2 }}
+            data={["Lekar", "Upratovacka", "Administrator", "Sestra"]}
+            placeholder="Please pick one"
+            label="Type of employee"
+            size={"lg"}
+            className="mb-8"
+            {...form.getInputProps("type")}
+          />
           <TextInput
             label="ID number"
             placeholder="Please enter your ID number"

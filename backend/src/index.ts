@@ -19,7 +19,8 @@ app.use(
 app.get("/", async (req: Request, res: Response) => {
   const connection = await getDBConnection();
   const queryResult = await connection?.execute(
-    `select 'Maros je gej' from dual`
+    //`select id_krajiny, nazov_krajiny from is_krajina WHERE id_krajiny LIKE 'SVK'`
+    `select id_krajiny, nazov_krajiny from is_krajina WHERE id_krajiny LIKE 'SVK'`
   );
   res.json({ rows: queryResult?.rows });
 });
