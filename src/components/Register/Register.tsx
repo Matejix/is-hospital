@@ -1,9 +1,26 @@
 import { TextInput, Button, Text, Anchor, Title, Select } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { Link } from "react-router-dom";
+import Axios from "axios";
+const address = "http://localhost:3000" ;
+import { useState } from "react";
 
 function Register() {
+  const [password, setPassword] = useState("");
+  const [username, setUsername] = useState("");
+
+  const registerEmployee = () => {
+
+    Axios.post("http://localhost:3000/register", {
+      username: form.values.username,
+      password: form.values.password,
+    }).then(() => {
+      console.log(username);
+    });
+  };
+
   const form = useForm({
+
     initialValues: {
       username: "",
       password: "",
@@ -44,18 +61,27 @@ function Register() {
             {...form.getInputProps("type")}
           />
           <TextInput
+            type="text"
+            onChange={(event) => {
+              setUsername(event.target.value);
+            }}
             label="ID number"
             placeholder="Please enter your ID number"
             size={"lg"}
             {...form.getInputProps("username")}
+            
           />
           <TextInput
+            onChange={(event) => {
+              setPassword(event.target.value);
+            }}
             className="mt-8"
             label="Password"
             placeholder="Please enter your password"
             type={"password"}
             size={"lg"}
             {...form.getInputProps("password")}
+            
           />
           <TextInput
             className="mt-8"
@@ -79,7 +105,7 @@ function Register() {
             color="indigo"
             size="lg"
             className="bg-indigo-400 w-1/2 mx-auto block mt-8"
-            type="submit"
+            onClick={registerEmployee}
           >
             Create Account
           </Button>
