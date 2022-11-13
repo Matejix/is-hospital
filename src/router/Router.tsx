@@ -35,7 +35,6 @@ const router = createBrowserRouter([
       <>
         <Menu />
         <Outlet />
-        <Footer />
       </>
     ),
     children: [
@@ -48,7 +47,7 @@ const router = createBrowserRouter([
         element: <Recipe />,
       },
       {
-        path: "patientService",
+        path: "patient-service",
         element: <PatientService />,
       },
       {
