@@ -1,8 +1,20 @@
 import { TextInput, Button, Text, Anchor, Title } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { Link } from "react-router-dom";
+  import Axios from "axios";
 
 function Login() {
+  const loginEmployee = () => {
+    Axios.post("http://localhost:3000/", {
+      username: form.values.username,
+      password: form.values.password,
+    }).then((response) => {
+      if(response.status == 200){
+        window.location.href = "/app";
+      }
+    });
+  };
+
   const form = useForm({
     initialValues: {
       username: "",
@@ -57,6 +69,8 @@ function Login() {
             size="lg"
             className="bg-teal-400 w-1/2 mx-auto block mt-8"
             type="submit"
+            onClick={loginEmployee}
+
           >
             Log in
           </Button>

@@ -26,19 +26,12 @@ app.get("/", async (req: Request, res: Response) => {
   res.json({ rows: queryResult?.rows });
 });
 
-app.post("/register", async (req, res) => {
-  console.log(req.body);
-  const username = req.body.username;
-  const password = req.body.password;
 
+const registerController = require('./controllers/registerController'); 
+app.use('/register', registerController);
 
-  const connection = await getDBConnection();
-  const queryResult = await connection?.execute(
-     `select * from is_zamestnanec_login where id_zamestnanec =?; `, username
-  );
-  console.log(queryResult);
-});
-
+const loginController = require('./controllers/loginController'); 
+app.use('/', loginController);
 
 
 app.listen(port, () => {
