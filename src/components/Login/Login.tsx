@@ -9,9 +9,10 @@ function Login() {
       username: form.values.username,
       password: form.values.password,
     }).then((response) => {
+      console.log(response);
       if(response.status == 200){
         window.location.href = "/app";
-      }
+      } 
     });
   };
 
