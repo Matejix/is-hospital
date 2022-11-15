@@ -11,10 +11,20 @@ function Login() {
     }).then((response) => {
       console.log(response);
       if(response.status == 200){
-        window.location.href = "/app";
+        localStorage.setItem("token", response.data.token);
+        authorized();
+        //window.location.href = "/app";
       } 
     });
   };
+
+  const authorized = () => {
+    Axios.get("http://localhost:3000/auth",
+     {headers: {"x-access-token": localStorage.getItem("token")}
+    }).then((response) => {
+      console.log(response);
+    })
+  }
 
   const form = useForm({
     initialValues: {
