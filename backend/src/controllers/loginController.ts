@@ -1,6 +1,9 @@
 import getDBConnection from "../database";
 import express, { Request, Response } from 'express';
 import OracleDB, { autoCommit } from "oracledb";
+import jwt from "jsonwebtoken";
+import { verify } from "crypto";
+
 const router  = express.Router(); 
 
 
@@ -11,7 +14,7 @@ router.post("/", async (req: Request, res: Response) => {
   const queryEmployeeRegistered = await connection?.execute(
     `select * from is_zamestnanec_login WHERE id_zamestnanec = ${username}`
   );
-
+  
   if(queryEmployeeRegistered?.rows?.length == 1){ //if id of employee exist
 
     const passwordQuery = await connection?.execute(
@@ -21,14 +24,35 @@ router.post("/", async (req: Request, res: Response) => {
     var passwordFromDb = obj1[0].HESLO;
 
     if(passwordFromDb == password){
-        res.json("Login Succesfull");
+        const token = jwt.sign({username},"TODOOOSecret",{expiresIn:300});
+      	
         console.log("User " + username + " logged in");
+        res.json({auth:true, token: token,result:username})
     }
   } else {
-      res.json("Login unsuccessful");
-      res.status(400);
+      res.send({message: "Login unsuccessful"});
   }
 });
+
+const verifyJWT = (req: Request,res: Response, next) => {
+    const token = req.headers["x-access-token"]
+    if(!token){
+      res.send("Unauthorized!")
+    } else {
+      jwt.verify(token.toString(), "TODOOOSecret", (err,decoded) => {
+        if (err){
+          res.json({ auth: false, message : "Unauthorized!"}); 
+        } else { 
+          req.userId = decoded.username;
+          next();
+        }
+      })
+    }
+}
+
+router.get('/auth', verifyJWT, (req,res)=> {
+  res.send("Authorized.")
+})
   
 module.exports = router;
 
