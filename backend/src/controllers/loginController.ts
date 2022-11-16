@@ -1,41 +1,40 @@
 import getDBConnection from "../database";
-import express, { Request, Response } from 'express';
-import OracleDB, { autoCommit } from "oracledb";
+import express, { Request, Response } from "express";
 import jwt from "jsonwebtoken";
-import { appendFile } from "fs";
-const { validateToken } = require("./JWT");
+import validateToken from "./validateToken";
 
-const router  = express.Router(); 
+const loginRouter = express.Router();
 
-
-router.post("/", async (req: Request, res: Response) => {
-  const { username, password} = req.body;
+loginRouter.post("/", async (req: Request, res: Response) => {
+  const { username, password } = req.body;
   const connection = await getDBConnection();
 
   const queryEmployeeRegistered = await connection?.execute(
     `select * from is_zamestnanec_login WHERE id_zamestnanec = ${username}`
   );
-  
-  if(queryEmployeeRegistered?.rows?.length == 1){ //if id of employee exist
+
+  if (queryEmployeeRegistered?.rows?.length == 1) {
+    //if id of employee exist
 
     const passwordQuery = await connection?.execute(
-        `select heslo from is_zamestnanec_login WHERE id_zamestnanec = ${username}`, [], {outFormat: OracleDB.OUT_FORMAT_OBJECT});
+      `select heslo from is_zamestnanec_login WHERE id_zamestnanec = ${username}`
+    );
 
     var obj1 = JSON.parse(JSON.stringify(passwordQuery?.rows));
     var passwordFromDb = obj1[0].HESLO;
 
-    if(passwordFromDb == password){
-        const token = jwt.sign({username},"TODOOOSecret",{expiresIn:300});
-      	console.log(token);
-        console.log("User " + username + " logged in");
-        res.json({auth:true, token: token,result:username});
-
+    if (passwordFromDb == password) {
+      const token = jwt.sign({ username: username }, "TODOOOSecret", {
+        expiresIn: 300,
+      });
+      console.log(token);
+      console.log("User " + username + " logged in");
+      res.json({ auth: true, token: token, result: username });
     }
   } else {
-      res.send({message: "Login unsuccessful"});
+    res.send({ message: "Login unsuccessful" });
   }
 });
-
 
 /*
 const verifyJWT = (req: Request,res: Response, next) => {
@@ -54,19 +53,14 @@ const verifyJWT = (req: Request,res: Response, next) => {
     }
 }
 
-router.get('/auth', verifyJWT, (req,res)=> {
+loginRouter.get('/auth', verifyJWT, (req,res)=> {
   res.send("Authorized.")
 })
   */
 
-
-
-
-
-router.get('/auth', validateToken, (req: Request,res: Response)=> {
+loginRouter.get("/auth", validateToken, (req: Request, res: Response) => {
   console.log("hre");
-  res.send("Authorized.")
-})
-  
-module.exports = router;
+  res.send("Authorized.");
+});
 
+export default loginRouter;

@@ -3,6 +3,9 @@ import cors from "cors";
 import * as dotenv from "dotenv";
 import getDBConnection from "./database";
 
+import loginRouter from "./controllers/loginController";
+import registerRouter from "./controllers/registerController";
+
 dotenv.config({ path: "../.env" });
 
 const port = process.env.BACKEND_PORT;
@@ -26,13 +29,9 @@ app.get("/", async (req: Request, res: Response) => {
   res.json({ rows: queryResult?.rows });
 });
 
+app.use("/register", registerRouter);
 
-const registerController = require('./controllers/registerController'); 
-app.use('/register', registerController);
-
-const loginController = require('./controllers/loginController'); 
-app.use('/', loginController);
-
+app.use("/", loginRouter);
 
 app.listen(port, () => {
   console.log(`Server listening at http://localhost:${port}`);
