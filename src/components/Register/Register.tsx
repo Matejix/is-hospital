@@ -6,17 +6,13 @@ const address = "http://localhost:3000" ;
 import { useState } from "react";
 
 function Register() {
-  const [password, setPassword] = useState("");
-  const [username, setUsername] = useState("");
 
   const registerEmployee = () => {
-
     Axios.post("http://localhost:3000/register", {
       username: form.values.username,
       password: form.values.password,
     }).then(() => {
-      console.log(username);
-    });
+      window.location.href = "/"});
   };
 
   const form = useForm({
@@ -25,11 +21,9 @@ function Register() {
       username: "",
       password: "",
       confirmPass: "",
-      type: "",
     },
 
     validate: {
-      type: (value) => (Boolean(value) ? null : "Choose type"),
       username: (value) => (Boolean(value) ? null : "Invalid username"),
       password: (value) => (Boolean(value) ? null : "Invalid password"),
       confirmPass: (value, { password }) =>
@@ -51,20 +45,9 @@ function Register() {
           Registration
         </Title>
         <form onSubmit={form.onSubmit((values) => console.log(values))}>
-          <Select
-            style={{ marginTop: 20, zIndex: 2 }}
-            data={["Lekar", "Upratovacka", "Administrator", "Sestra"]}
-            placeholder="Please pick one"
-            label="Type of employee"
-            size={"lg"}
-            className="mb-8"
-            {...form.getInputProps("type")}
-          />
+         
           <TextInput
             type="text"
-            onChange={(event) => {
-              setUsername(event.target.value);
-            }}
             label="ID number"
             placeholder="Please enter your ID number"
             size={"lg"}
@@ -72,9 +55,6 @@ function Register() {
             
           />
           <TextInput
-            onChange={(event) => {
-              setPassword(event.target.value);
-            }}
             className="mt-8"
             label="Password"
             placeholder="Please enter your password"
@@ -93,7 +73,7 @@ function Register() {
           />
 
           <Text color="dimmed" size="sm" align="center" mt={24}>
-            Alreade have account?{" "}
+            Already have account?{" "}
             <Link to="/">
               <Anchor<"button"> weight={700} type="button">
                 Login
@@ -106,10 +86,13 @@ function Register() {
             size="lg"
             className="bg-indigo-400 w-1/2 mx-auto block mt-8"
             onClick={registerEmployee}
+
           >
             Create Account
           </Button>
         </form>
+        
+
       </div>
     </div>
   );
