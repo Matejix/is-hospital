@@ -37,6 +37,7 @@ function NavbarLink({ icon: Icon, label, active, onClick }: NavbarLinkProps) {
   //   ? "bg-teal-300 text-slate-100 m-2"
   //   : "text-slate-100 m-2";
   const hoverEffects = "";
+ 
   return (
     <Tooltip
       label={label}
@@ -60,7 +61,9 @@ const mockdata = [{ icon: IconHome2, label: "Domov", linkTo: "/app" }];
 
 export function Menu() {
   const { pathname } = useLocation();
-
+  const logout = (()=> {
+    localStorage.removeItem("token");
+ });
   const links = mockdata.map((link, index) => (
     <Link to={link.linkTo}>
       <NavbarLink
@@ -82,8 +85,8 @@ export function Menu() {
       </Navbar.Section>
       <Navbar.Section>
         <Stack mb={10} justify="center" spacing={0}>
-          <Link to="/">
-            <NavbarLink icon={IconLogout} label="Logout" />
+          <Link to="/"   onClick={logout}>
+            <NavbarLink icon={IconLogout}  label="Logout" />
           </Link>
         </Stack>
       </Navbar.Section>

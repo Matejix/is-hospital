@@ -2,17 +2,31 @@ import { TextInput, Button, Text, Anchor, Title, Select } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { Link } from "react-router-dom";
 import Axios from "axios";
-const address = "http://localhost:3000" ;
-import { useState } from "react";
+import {ToastContainer, toast} from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 function Register() {
-
   const registerEmployee = () => {
     Axios.post("http://localhost:3000/register", {
       username: form.values.username,
       password: form.values.password,
-    }).then(() => {
-      window.location.href = "/"});
+    })
+    .then(() => {
+        window.location.href = "/";
+    })
+    .catch((err) => {
+        console.log(err);
+        toast.warn(err.response.data.message, {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          });
+      });
   };
 
   const form = useForm({
@@ -27,7 +41,7 @@ function Register() {
       username: (value) => (Boolean(value) ? null : "Invalid username"),
       password: (value) => (Boolean(value) ? null : "Invalid password"),
       confirmPass: (value, { password }) =>
-        password === value ? null : "Password do not match",
+        password === value ? null : "Passwords do not match",
     },
   });
 
@@ -94,6 +108,18 @@ function Register() {
         
 
       </div>
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+        />
     </div>
   );
 }

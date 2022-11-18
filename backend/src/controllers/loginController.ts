@@ -2,6 +2,8 @@ import getDBConnection from "../database";
 import express, { Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import validateToken from "./validateToken";
+import bcrypt from "bcrypt";
+
 
 const loginRouter = express.Router();
 
@@ -20,46 +22,45 @@ loginRouter.post("/", async (req: Request, res: Response) => {
       `select heslo from is_zamestnanec_login WHERE id_zamestnanec = ${username}`
     );
 
-    var obj1 = JSON.parse(JSON.stringify(passwordQuery?.rows));
-    var passwordFromDb = obj1[0].HESLO;
-
-    if (passwordFromDb == password) {
-      const token = jwt.sign({ username: username }, "TODOOOSecret", {
-        expiresIn: 300,
-      });
-      console.log(token);
-      console.log("User " + username + " logged in");
-      res.json({ auth: true, token: token, result: username });
-    }
-  } else {
-    res.send({ message: "Login unsuccessful" });
+    var obj = JSON.parse(JSON.stringify(passwordQuery?.rows));
+    var passwordFromDb = obj[0].HESLO;
+    bcrypt.compare(password, passwordFromDb).then(async (match) => {
+      if (!match) {
+        res.status(400).json({ message: "Login unsuccessful!" });
+      } else {
+        var employeeType = await getRole(username);
+        const token = jwt.sign({ username: username,
+          role: employeeType
+         }, "TODOOOSecret", {
+          expiresIn: 300,
+        });
+        
+        console.log("User " + username + " logged in");
+        res.json({ auth: true, token: token, result: username });
+      }
+    });
+   
   }
 });
 
-/*
-const verifyJWT = (req: Request,res: Response, next) => {
-    const token = req.headers["x-access-token"]
-    if(!token){
-      res.send("Unauthorized!")
-    } else {
-      jwt.verify(token.toString(), "TODOOOSecret", (err,decoded) => {
-        if (err){
-          res.json({ auth: false, message : "Unauthorized!"}); 
-        } else { 
-          req.userId = decoded.username;
-          next();
-        }
-      })
-    }
-}
+async function  getRole ( username: number) { //TODO vytvorit spolocny subor pre pomocne funkcie 
+  const connection = await getDBConnection();
+  const passwordQuery = await connection?.execute(
+    `select typ_zamestnanca from is_zamestnanec WHERE id_zamestnanec = ${username}`
+  );
+  var obj = JSON.parse(JSON.stringify(passwordQuery?.rows));
+  var type = obj[0].TYP_ZAMESTNANCA;
+  console.log(type);
+  if(type == "1"){
+    var role = "Zdravotnik";
+  } else { 
+    var role = "Administrator";
+  }
+  return role;
+};
 
-loginRouter.get('/auth', verifyJWT, (req,res)=> {
-  res.send("Authorized.")
-})
-  */
 
 loginRouter.get("/auth", validateToken, (req: Request, res: Response) => {
-  console.log("hre");
   res.send("Authorized.");
 });
 
