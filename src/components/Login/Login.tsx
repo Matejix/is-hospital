@@ -1,30 +1,29 @@
 import { TextInput, Button, Text, Anchor, Title } from "@mantine/core";
 import { useForm } from "@mantine/form";
+import Axios from "axios";
 import { Link } from "react-router-dom";
-  import Axios from "axios";
-
 function Login() {
   const loginEmployee = () => {
     Axios.post("http://localhost:3000/", {
       username: form.values.username,
       password: form.values.password,
-    }).then((response) => {
+    }).then((response: any) => {
       console.log(response);
-      if(response.status == 200){
+      if (response.status == 200) {
         localStorage.setItem("token", response.data.token);
         authorized();
         //window.location.href = "/app";
-      } 
+      }
     });
   };
 
   const authorized = () => {
-    Axios.get("http://localhost:3000/auth",
-     {headers: {"x-access-token": localStorage.getItem("token")}
-    }).then((response) => {
+    Axios.get("http://localhost:3000/auth", {
+      headers: { "x-access-token": localStorage.getItem("token") },
+    }).then((response: any) => {
       console.log(response);
-    })
-  }
+    });
+  };
 
   const form = useForm({
     initialValues: {
@@ -81,7 +80,6 @@ function Login() {
             className="bg-teal-400 w-1/2 mx-auto block mt-8"
             type="submit"
             onClick={loginEmployee}
-
           >
             Log in
           </Button>

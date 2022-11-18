@@ -34,7 +34,9 @@ const router = createBrowserRouter([
     element: (
       <>
         <Menu />
-        <Outlet />
+        <div className="pl-24">
+          <Outlet />
+        </div>
       </>
     ),
     children: [
