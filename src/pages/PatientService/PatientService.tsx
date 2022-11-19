@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 import {
   createStyles,
   Table,
@@ -8,22 +8,30 @@ import {
   Text,
   Center,
   TextInput,
-} from '@mantine/core';
-import { keys } from '@mantine/utils';
-import { IconSelector, IconChevronDown, IconChevronUp, IconSearch } from '@tabler/icons';
-
+} from "@mantine/core";
+import { keys } from "@mantine/utils";
+import {
+  IconSelector,
+  IconChevronDown,
+  IconChevronUp,
+  IconSearch,
+} from "@tabler/icons";
+import axios from "axios";
 
 const useStyles = createStyles((theme) => ({
   th: {
-    padding: '0 !important',
+    padding: "0 !important",
   },
 
   control: {
-    width: '100%',
+    width: "100%",
     padding: `${theme.spacing.xs}px ${theme.spacing.md}px`,
 
-    '&:hover': {
-      backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[0],
+    "&:hover": {
+      backgroundColor:
+        theme.colorScheme === "dark"
+          ? theme.colors.dark[6]
+          : theme.colors.gray[0],
     },
   },
 
@@ -37,7 +45,7 @@ const useStyles = createStyles((theme) => ({
 interface RowData {
   MENO: string;
   PRIEZVISKO: string;
- // rc: string;
+  // rc: string;
 }
 
 interface TableSortProps {
@@ -52,7 +60,11 @@ interface ThProps {
 }
 function Th({ children, reversed, sorted, onSort }: ThProps) {
   const { classes } = useStyles();
-  const Icon = sorted ? (reversed ? IconChevronUp : IconChevronDown) : IconSelector;
+  const Icon = sorted
+    ? reversed
+      ? IconChevronUp
+      : IconChevronDown
+    : IconSelector;
   return (
     <th className={classes.th}>
       <UnstyledButton onClick={onSort} className={classes.control}>
@@ -98,21 +110,24 @@ function sortData(
   );
 }
 
-function PatientService( {data} : TableSortProps ) {
-  // useEffect(() => { getUsers();}, []);
-  // const [datas,setDatas] = useState([]);
-  // const getUsers = () => {
-  //   Axios.get("http://localhost:3000/patientservice/getPatients")
-  //   .then((response) => {
-  //     console.log(response);
-  //     setDatas(response.data);
-  //   });
-  // };
+function PatientService() {
+  useEffect(() => {
+    getUsers();
+  }, []);
+  const [patients, setPatients] = useState<RowData[] | null>(null);
+  const getUsers = () => {
+    axios
+      .get("http://localhost:3000/patientservice/getPatients")
+      .then((response: any) => {
+        console.log(response);
+        setPatients(response.data);
+      });
+  };
 
   // var data = datas as TableSortProps;
 
-  const [search, setSearch] = useState('');
-  const [sortedData, setSortedData] = useState(data);
+  const [search, setSearch] = useState("");
+  const [sortedData, setSortedData] = useState(patients);
   const [sortBy, setSortBy] = useState<keyof RowData | null>(null);
   const [reverseSortDirection, setReverseSortDirection] = useState(false);
 
@@ -120,76 +135,82 @@ function PatientService( {data} : TableSortProps ) {
     const reversed = field === sortBy ? !reverseSortDirection : false;
     setReverseSortDirection(reversed);
     setSortBy(field);
-    setSortedData(sortData(data, { sortBy: field, reversed, search }));
+    setSortedData(
+      sortData(patients || [], { sortBy: field, reversed, search })
+    );
   };
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.currentTarget;
     setSearch(value);
-    setSortedData(sortData(data, { sortBy, reversed: reverseSortDirection, search: value }));
+    setSortedData(
+      sortData(patients || [], {
+        sortBy,
+        reversed: reverseSortDirection,
+        search: value,
+      })
+    );
   };
 
-  const rows = sortedData.map((row) => (
+  const rows = sortedData?.map((row: any) => (
     <tr key={row.MENO}>
-      <td>{row.PRIEZVISKO}</td>
       <td>{row.MENO}</td>
+      <td>{row.PRIEZVISKO}</td>
     </tr>
-   ));
+  ));
 
   return (
-     <ScrollArea>
-       <TextInput
-         placeholder="Search by any field"
-         mb="md"
-         icon={<IconSearch size={14} stroke={1.5} />}
-         value={search}
-         onChange={handleSearchChange}
-       />
-       <Table
-         horizontalSpacing="md"
-         verticalSpacing="xs"
-         sx={{ tableLayout: 'fixed', minWidth: 700 }}
-       >
-         <thead>
-           <tr>
-             <Th
-               sorted={sortBy === 'MENO'}
-               reversed={reverseSortDirection}
-               onSort={() => setSorting('MENO')}
-             >
-               Name
-             </Th>
-             {/* <Th
-               sorted={sortBy === 'email'}
-               reversed={reverseSortDirection}
-               onSort={() => setSorting('email')}
-             >
-               Email
-             </Th>
-             <Th
-               sorted={sortBy === 'company'}
-               reversed={reverseSortDirection}
-               onSort={() => setSorting('company')}
-             >
-               Company
-             </Th> */}
-           </tr>
-         </thead>
-         <tbody>
-           {rows.length > 0 ? (
-             rows
-           ) : (
-             <tr>
-               <td colSpan={Object.keys(data[0]).length}>
-                 <Text weight={500} align="center">
-                   Nothing found
-                 </Text>
-               </td>
-             </tr>
-           )}
-         </tbody>
-       </Table>
-     </ScrollArea>
-  );}
+    <ScrollArea>
+      <TextInput
+        placeholder="Search by any field"
+        mb="md"
+        icon={<IconSearch size={14} stroke={1.5} />}
+        value={search}
+        onChange={handleSearchChange}
+      />
+      <Table
+        horizontalSpacing="md"
+        verticalSpacing="xs"
+        sx={{ tableLayout: "fixed", minWidth: 700 }}
+      >
+        <thead>
+          <tr>
+            <Th
+              sorted={sortBy === "MENO"}
+              reversed={reverseSortDirection}
+              onSort={() => setSorting("MENO")}
+            >
+              Name
+            </Th>
+            <Th
+              sorted={sortBy === "PRIEZVISKO"}
+              reversed={reverseSortDirection}
+              onSort={() => setSorting("PRIEZVISKO")}
+            >
+              LastName
+            </Th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows !== undefined && rows?.length > 0 ? (
+            rows
+          ) : (
+            <tr>
+              <td
+                colSpan={
+                  Object.keys(patients === null ? [] : patients[0]).length
+                }
+              >
+                <Text weight={500} align="center">
+                  Nothing found
+                </Text>
+              </td>
+            </tr>
+          )}
+        </tbody>
+      </Table>
+    </ScrollArea>
+  );
+}
 
 export default PatientService;
