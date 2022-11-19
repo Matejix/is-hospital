@@ -50,7 +50,6 @@ async function  getRole ( username: number) { //TODO vytvorit spolocny subor pre
   );
   var obj = JSON.parse(JSON.stringify(passwordQuery?.rows));
   var type = obj[0].TYP_ZAMESTNANCA;
-  console.log(type);
   if(type == "1"){
     var role = "Zdravotnik";
   } else { 
@@ -62,6 +61,7 @@ async function  getRole ( username: number) { //TODO vytvorit spolocny subor pre
 
 loginRouter.get("/auth", validateToken, (req: Request, res: Response) => {
   res.send("Authorized.");
+  return true;
 });
 
 export default loginRouter;

@@ -1,4 +1,6 @@
 import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import Axios from "axios";
 // Pages
 import Home from "@/pages/Home";
 import Recipe from "@/pages/Recipe";
@@ -12,7 +14,22 @@ import Menu from "@/components/Menu";
 import Footer from "@/components/Footer";
 import Login from "@/components/Login";
 
-const router = createBrowserRouter([
+const [data,setData] = useState([]);
+function getUsers() {
+  Axios.get("http:localhost:3000/patientservice/getPatients")
+  .then((response) => {
+    console.log(response);
+    setData(response.data);
+  });
+};
+
+ useEffect(() => { 
+ getUsers();
+ }, []);
+
+ 
+const router = createBrowserRouter(
+  [
   {
     path: "/",
     element: (
@@ -50,7 +67,7 @@ const router = createBrowserRouter([
       },
       {
         path: "patient-service",
-        element: <PatientService />,
+        element: <PatientService data = {data} />,
       },
       {
         path: "schedule",
@@ -69,6 +86,9 @@ const router = createBrowserRouter([
 ]);
 
 function Router() {
+  
+
+
   return <RouterProvider router={router} />;
 }
 

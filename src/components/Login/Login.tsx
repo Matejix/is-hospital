@@ -4,6 +4,9 @@ import Axios from "axios";
 import { Link } from "react-router-dom";
 import {ToastContainer, toast} from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+import React, { useState, useEffect } from 'react';
+
+
 
 function Login() {
   const loginEmployee = () => {
@@ -34,6 +37,12 @@ function Login() {
     });
     
   };
+  useEffect(() => {
+    authorized();
+    if(localStorage.getItem("token")){ //todo podla toho ci je authorized
+      window.location.href = "/app";
+    }
+  });
 
   const authorized = () => {
     Axios.get("http://localhost:3000/auth", {

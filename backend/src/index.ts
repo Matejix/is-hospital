@@ -5,7 +5,7 @@ import getDBConnection from "./database";
 
 import loginRouter from "./controllers/loginController";
 import registerRouter from "./controllers/registerController";
-
+import patientServiceRouter from "./controllers/patientServiceController";
 dotenv.config({ path: "../.env" });
 
 const port = process.env.BACKEND_PORT;
@@ -32,6 +32,8 @@ app.get("/", async (req: Request, res: Response) => {
 app.use("/register", registerRouter);
 
 app.use("/", loginRouter);
+
+app.use("/patientservice", patientServiceRouter);
 
 app.listen(port, () => {
   console.log(`Server listening at http://localhost:${port}`);
