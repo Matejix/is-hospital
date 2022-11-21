@@ -131,6 +131,12 @@ function PatientService() {
   const [sortBy, setSortBy] = useState<keyof RowData | null>(null);
   const [reverseSortDirection, setReverseSortDirection] = useState(false);
 
+  useEffect(() => {
+    if (patients !== null && sortedData === null && sortBy === null) {
+      setSortedData(patients);
+    }
+  }, [patients]);
+
   const setSorting = (field: keyof RowData) => {
     const reversed = field === sortBy ? !reverseSortDirection : false;
     setReverseSortDirection(reversed);
@@ -153,7 +159,7 @@ function PatientService() {
   };
 
   const rows = sortedData?.map((row: any) => (
-    <tr key={row.MENO}>
+    <tr key={`${row.MENO}-${row.PRIEZVISKO}`}>
       <td>{row.MENO}</td>
       <td>{row.PRIEZVISKO}</td>
     </tr>
