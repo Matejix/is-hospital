@@ -6,6 +6,7 @@ import {
   IconLogout,
   IconArrowLeft,
 } from "@tabler/icons";
+import logo from "../../assets/logo-white.png";
 
 interface NavbarLinkProps {
   icon: TablerIcon;
@@ -44,7 +45,7 @@ function NavbarLink({ icon: Icon, label, active, onClick }: NavbarLinkProps) {
       transitionDuration={500}
       transition="scale"
       openDelay={500}
-      className="bg-slate-600"
+      className="bg-slate-600 z-20"
     >
       <UnstyledButton
         onClick={onClick}
@@ -73,7 +74,9 @@ export function Menu() {
 
   return (
     <Navbar className="fixed w-24 h-screen bg-gradient-to-b from-blue-500 to-blue-400 items-center">
-      <Center>LOGO</Center>
+      <Center>
+        <img className="w-32 p-2 mt-2" src={logo} alt="E-Hospital logo" />
+      </Center>
       <Navbar.Section grow mt={50}>
         <Stack justify="center" spacing={0}>
           <BackButton actualPath={pathname} />
