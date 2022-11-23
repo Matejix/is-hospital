@@ -18,7 +18,7 @@ const Card = ({
 }: Props) => {
   return (
     <MantineCard
-      className={`flex w-full group aspect-square m-auto items-center justify-center border-teal-200 border-2 hover:bg-teal-500 hover:text-white transition duration-500 ${hoverClass}`}
+      className={`flex w-full group aspect-square m-auto items-center justify-center border-blue-200 border-2 hover:bg-gradient-to-b from-blue-500 to-blue-400 hover:text-white transition duration-500 ${hoverClass}`}
       shadow="sm"
       p="lg"
       radius="md"

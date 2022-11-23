@@ -48,9 +48,9 @@ function NavbarLink({ icon: Icon, label, active, onClick }: NavbarLinkProps) {
     >
       <UnstyledButton
         onClick={onClick}
-        className={`bg-teal-400 text-slate-100 p-2 m-2 rounded-lg transition duration-500 hover:scale-110 hover:shadow-lg hover:shadow-teal-700 hover:bg-teal-400`}
+        className={`bg-blue-500 text-slate-100 p-2 m-2 rounded-lg transition duration-500 hover:scale-110 hover:shadow-lg hover:shadow-blue-700 hover:bg-blue-400`}
       >
-        <Icon stroke={2} className="w-12 h-12" />
+        <Icon stroke={2} className="w-8 h-8" />
       </UnstyledButton>
     </Tooltip>
   );
@@ -62,7 +62,7 @@ export function Menu() {
   const { pathname } = useLocation();
 
   const links = mockdata.map((link, index) => (
-    <Link to={link.linkTo}>
+    <Link to={link.linkTo} key={link.linkTo}>
       <NavbarLink
         {...link}
         key={link.label}
@@ -72,7 +72,7 @@ export function Menu() {
   ));
 
   return (
-    <Navbar className="fixed w-24 h-screen bg-teal-500 items-center">
+    <Navbar className="fixed w-24 h-screen bg-gradient-to-b from-blue-500 to-blue-400 items-center">
       <Center>LOGO</Center>
       <Navbar.Section grow mt={50}>
         <Stack justify="center" spacing={0}>
