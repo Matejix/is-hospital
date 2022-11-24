@@ -229,12 +229,11 @@ function PatientService() {
         </ScrollArea>
       </div>
       <div className="MoreInfo">
-More info
+kokos
       </div>
 
     </div>
   );
 }
-
 
 export default PatientService;
