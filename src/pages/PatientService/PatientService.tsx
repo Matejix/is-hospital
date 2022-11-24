@@ -9,6 +9,8 @@ import {
   Text,
   Center,
   TextInput,
+  Menu,
+  ActionIcon,
 } from "@mantine/core";
 import { keys } from "@mantine/utils";
 import {
@@ -16,6 +18,11 @@ import {
   IconChevronDown,
   IconChevronUp,
   IconSearch,
+  IconNote,
+  IconMessages,
+  IconReportAnalytics,
+  IconTrash,
+  IconDots,
 } from "@tabler/icons";
 import axios from "axios";
 
@@ -48,11 +55,9 @@ interface RowData {
   PRIEZVISKO: string;
   ROD_CISLO: string;
 }
-
 interface TableSortProps {
   data: RowData[];
 }
-
 interface ThProps {
   children: React.ReactNode;
   reversed: boolean;
@@ -82,13 +87,14 @@ function Th({ children, reversed, sorted, onSort }: ThProps) {
   );
 }
 
+
+
 function filterData(data: RowData[], search: string) {
   const query = search.toLowerCase().trim();
   return data.filter((item) =>
     keys(data[0]).some((key) => item[key].toLowerCase().includes(query))
   );
 }
-
 function sortData(
   data: RowData[],
   payload: { sortBy: keyof RowData | null; reversed: boolean; search: string }
@@ -111,6 +117,12 @@ function sortData(
   );
 }
 
+function MainBlockComponent() {
+  return (<div>
+    Main block, click on user
+  </div>)
+}
+
 function PatientService() {
   useEffect(() => {
     getUsers();
@@ -125,8 +137,7 @@ function PatientService() {
       });
   };
 
-  // var data = datas as TableSortProps;
-
+  const [choosedPerson, setChoosedPerson] = useState(false);
   const [search, setSearch] = useState("");
   const [sortedData, setSortedData] = useState(patients);
   const [sortBy, setSortBy] = useState<keyof RowData | null>(null);
@@ -159,14 +170,35 @@ function PatientService() {
     );
   };
 
+  const choosePerson = (row : RowData) => {
+    console.log(choosedPerson);
+    alert(row.MENO + " " +row.PRIEZVISKO);
+    setChoosedPerson(true);
+    console.log(choosedPerson);
+  };
+  
   const rows = sortedData?.map((row: any) => (
-    <tr key={`${row.MENO}-${row.PRIEZVISKO}`}>
-      <td>{row.MENO}</td>
-      <td>{row.PRIEZVISKO}</td>
-      <td>{row.ROD_CISLO}</td>
+    <tr key={`${row.MENO}-${row.PRIEZVISKO}-${row.ROD_CISLO}`} >
+      <td onClick={() => choosePerson(row)}>{row.MENO}</td>
+      <td onClick={() => choosePerson(row)}>{row.PRIEZVISKO}</td>
+      <td onClick={() => choosePerson(row)}>{row.ROD_CISLO}</td>
+      <td><Menu transition="pop" withArrow position="bottom-end">
+            <Menu.Target>
+              <ActionIcon>
+                <IconDots size={16} stroke={1.5} />
+              </ActionIcon>
+            </Menu.Target>
+            <Menu.Dropdown>
+              <Menu.Item icon={<IconReportAnalytics size={16} stroke={1.5} />}>Pridať záznam</Menu.Item>
+              <Menu.Item icon={<IconNote size={16} stroke={1.5} />}>Pridať predpis</Menu.Item>
+              <Menu.Item icon={<IconTrash size={16} stroke={1.5} />} color="red">
+                Delete patient
+              </Menu.Item>
+            </Menu.Dropdown>
+          </Menu></td>
     </tr>
   ));
-
+  
   return (
     <div className="PatientsInfo">
       <div className="TableBlock">
@@ -179,16 +211,18 @@ function PatientService() {
             onChange={handleSearchChange}
           />
           <Table
-            horizontalSpacing="md"
+            horizontalSpacing="xs"
             verticalSpacing="xs"
-            sx={{ tableLayout: "fixed", minWidth: 700 }}
+            highlightOnHover
+            sx={{ tableLayout: "fixed", minWidth: 200 }}
           >
-            <thead>
-              <tr>
-                <Th
+            <thead >
+              <tr >
+                <Th 
                   sorted={sortBy === "MENO"}
                   reversed={reverseSortDirection}
                   onSort={() => setSorting("MENO")}
+               
                 >
                   Name
                 </Th>
@@ -206,20 +240,29 @@ function PatientService() {
                 >
                   ID Number
                 </Th>
+                <td  className="rowHeader">
+                  <UnstyledButton >
+                    <Group position="apart">
+                       <Text weight={500} size="sm">
+                          Edit
+                      </Text>
+                    </Group>
+                  </UnstyledButton>
+                </td>
               </tr>
             </thead>
-            <tbody>
+            <tbody >
               {rows !== undefined && rows?.length > 0 ? (
                 rows
               ) : (
-                <tr>
-                  <td
+                <tr >
+                  <td 
                     colSpan={
                       Object.keys(patients === null ? [] : patients[0]).length
                     }
-                  >
+                    >
                     <Text weight={500} align="center">
-                      Nothing found
+                      Data is loading...
                     </Text>
                   </td>
                 </tr>
@@ -229,7 +272,7 @@ function PatientService() {
         </ScrollArea>
       </div>
       <div className="MoreInfo">
-kokos
+    
       </div>
 
     </div>

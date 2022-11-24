@@ -7,11 +7,17 @@
 }
 
 .TableBlock {
-    max-width: 50%;
+    max-width: 65%;
     margin: 5%;
 }
 
 .MoreInfo {
-    min-width: 50%;
-    color: rgb(48, 85, 117);
+    min-width: 35%;
+    background-color: #2E62B3;
+    min-height: 850px;
+}
+
+.rowHeader {
+    border-bottom: 1px solid #DEE2E6;
+
 }
