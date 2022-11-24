@@ -5,6 +5,7 @@ import {
   PencilIcon,
   DocumentPlusIcon,
   PlusCircleIcon,
+  CircleStackIcon,
 } from "@heroicons/react/24/solid";
 
 function useCardItems() {
@@ -44,6 +45,13 @@ function useCardItems() {
           <PlusCircleIcon className="w-24 h-24 text-slate-700 group-hover:text-slate-50 transition duration-500" />
         ),
         link: "hospitalization",
+      },
+      {
+        text: "Reporty",
+        icon: (
+          <CircleStackIcon className="w-24 h-24 text-slate-700 group-hover:text-slate-50 transition duration-500" />
+        ),
+        link: "reports",
       },
     ],
     []

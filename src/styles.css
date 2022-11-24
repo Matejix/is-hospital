@@ -1,0 +1,17 @@
+
+.PatientsInfo {
+    display: flex;
+    
+    flex-direction: row;
+
+}
+
+.TableBlock {
+    max-width: 50%;
+    margin: 5%;
+}
+
+.MoreInfo {
+    min-width: 50%;
+    color: rgb(48, 85, 117);
+}

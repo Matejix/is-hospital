@@ -2,6 +2,7 @@ import { TextInput, Button, Text, Anchor, Title } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import Axios from "axios";
 import { Link } from "react-router-dom";
+import logo from "../../assets/logo.png";
 import {ToastContainer, toast} from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import React, { useState, useEffect } from 'react';
@@ -67,15 +68,8 @@ function Login() {
   return (
     <div className="w-full min-h-screen flex items-center justify-center">
       <div className="max-w-md w-full bg-teal-50 border-2 border-teal-300 rounded-md p-8">
-        <Title
-          mb={24}
-          align="center"
-          sx={(theme) => ({
-            fontFamily: `Greycliff CF, ${theme.fontFamily}`,
-            fontWeight: 900,
-          })}
-        >
-          Nazov / Logo appky
+        <Title>
+          <img className="m-auto w-32 mb-5" src={logo} alt="E-Hospital logo" />
         </Title>
         <form onSubmit={form.onSubmit((values) => console.log(values))}>
           <TextInput

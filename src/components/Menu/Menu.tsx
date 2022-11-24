@@ -5,7 +5,9 @@ import {
   IconHome2,
   IconLogout,
   IconArrowLeft,
+  IconUser
 } from "@tabler/icons";
+import logo from "../../assets/logo-white.png";
 
 interface NavbarLinkProps {
   icon: TablerIcon;
@@ -45,13 +47,13 @@ function NavbarLink({ icon: Icon, label, active, onClick }: NavbarLinkProps) {
       transitionDuration={500}
       transition="scale"
       openDelay={500}
-      className="bg-slate-600"
+      className="bg-slate-600 z-20"
     >
       <UnstyledButton
         onClick={onClick}
-        className={`bg-teal-400 text-slate-100 p-2 m-2 rounded-lg transition duration-500 hover:scale-110 hover:shadow-lg hover:shadow-teal-700 hover:bg-teal-400`}
+        className={`bg-blue-500 text-slate-100 p-2 m-2 rounded-lg transition duration-500 hover:scale-110 hover:shadow-lg hover:shadow-blue-700 hover:bg-blue-400`}
       >
-        <Icon stroke={2} className="w-12 h-12" />
+        <Icon stroke={2} className="w-8 h-8" />
       </UnstyledButton>
     </Tooltip>
   );
@@ -65,7 +67,7 @@ export function Menu() {
     localStorage.removeItem("token");
  });
   const links = mockdata.map((link, index) => (
-    <Link to={link.linkTo}>
+    <Link to={link.linkTo} key={link.linkTo}>
       <NavbarLink
         {...link}
         key={link.label}
@@ -75,12 +77,21 @@ export function Menu() {
   ));
 
   return (
-    <Navbar className="fixed w-24 h-screen bg-teal-500 items-center">
-      <Center>LOGO</Center>
+    <Navbar className="fixed w-24 h-screen bg-gradient-to-b from-blue-500 to-blue-400 items-center">
+      <Center>
+        <img className="w-32 p-2 mt-2" src={logo} alt="E-Hospital logo" />
+      </Center>
       <Navbar.Section grow mt={50}>
         <Stack justify="center" spacing={0}>
           <BackButton actualPath={pathname} />
           {links}
+        </Stack>
+      </Navbar.Section>
+      <Navbar.Section >
+        <Stack justify="center" spacing={0}>
+          <Link to="/app/profile" >
+            <NavbarLink icon={IconUser}  label="Profile" />
+          </Link>
         </Stack>
       </Navbar.Section>
       <Navbar.Section>

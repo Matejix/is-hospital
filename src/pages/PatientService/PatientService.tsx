@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import "../../styles.css";
 import {
   createStyles,
   Table,
@@ -45,7 +46,7 @@ const useStyles = createStyles((theme) => ({
 interface RowData {
   MENO: string;
   PRIEZVISKO: string;
-  // rc: string;
+  ROD_CISLO: string;
 }
 
 interface TableSortProps {
@@ -162,60 +163,76 @@ function PatientService() {
     <tr key={`${row.MENO}-${row.PRIEZVISKO}`}>
       <td>{row.MENO}</td>
       <td>{row.PRIEZVISKO}</td>
+      <td>{row.ROD_CISLO}</td>
     </tr>
   ));
 
   return (
-    <ScrollArea>
-      <TextInput
-        placeholder="Search by any field"
-        mb="md"
-        icon={<IconSearch size={14} stroke={1.5} />}
-        value={search}
-        onChange={handleSearchChange}
-      />
-      <Table
-        horizontalSpacing="md"
-        verticalSpacing="xs"
-        sx={{ tableLayout: "fixed", minWidth: 700 }}
-      >
-        <thead>
-          <tr>
-            <Th
-              sorted={sortBy === "MENO"}
-              reversed={reverseSortDirection}
-              onSort={() => setSorting("MENO")}
-            >
-              Name
-            </Th>
-            <Th
-              sorted={sortBy === "PRIEZVISKO"}
-              reversed={reverseSortDirection}
-              onSort={() => setSorting("PRIEZVISKO")}
-            >
-              LastName
-            </Th>
-          </tr>
-        </thead>
-        <tbody>
-          {rows !== undefined && rows?.length > 0 ? (
-            rows
-          ) : (
-            <tr>
-              <td
-                colSpan={
-                  Object.keys(patients === null ? [] : patients[0]).length
-                }
-              >
-                <Text weight={500} align="center">
-                  Nothing found
-                </Text>
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </Table>
-    </ScrollArea>
+    <div className="PatientsInfo">
+      <div className="TableBlock">
+        <ScrollArea>
+          <TextInput
+            placeholder="Search by any field"
+            mb="md"
+            icon={<IconSearch size={14} stroke={1.5} />}
+            value={search}
+            onChange={handleSearchChange}
+          />
+          <Table
+            horizontalSpacing="md"
+            verticalSpacing="xs"
+            sx={{ tableLayout: "fixed", minWidth: 700 }}
+          >
+            <thead>
+              <tr>
+                <Th
+                  sorted={sortBy === "MENO"}
+                  reversed={reverseSortDirection}
+                  onSort={() => setSorting("MENO")}
+                >
+                  Name
+                </Th>
+                <Th
+                  sorted={sortBy === "PRIEZVISKO"}
+                  reversed={reverseSortDirection}
+                  onSort={() => setSorting("PRIEZVISKO")}
+                >
+                  LastName
+                </Th>
+                <Th
+                  sorted={sortBy === "ROD_CISLO"}
+                  reversed={reverseSortDirection}
+                  onSort={() => setSorting("ROD_CISLO")}
+                >
+                  ID Number
+                </Th>
+              </tr>
+            </thead>
+            <tbody>
+              {rows !== undefined && rows?.length > 0 ? (
+                rows
+              ) : (
+                <tr>
+                  <td
+                    colSpan={
+                      Object.keys(patients === null ? [] : patients[0]).length
+                    }
+                  >
+                    <Text weight={500} align="center">
+                      Nothing found
+                    </Text>
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </Table>
+        </ScrollArea>
+      </div>
+      <div className="MoreInfo">
+kokos
+      </div>
+
+    </div>
   );
 }
 

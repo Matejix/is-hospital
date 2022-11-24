@@ -6,10 +6,9 @@ patientServiceRouter.get("/getPatients", async (req: Request, res: Response) => 
     const connection = await getDBConnection();
 
     const query = await connection?.execute(
-      `select meno, priezvisko from is_osoba `
+      `select meno, priezvisko, rod_cislo from is_pacient join is_osoba using (rod_cislo)`
     );
     var rows = JSON.parse(JSON.stringify(query?.rows));
-    console.log(rows);
     res.json(rows);
 });
 
