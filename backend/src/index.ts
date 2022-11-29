@@ -6,6 +6,8 @@ import getDBConnection from "./database";
 import loginRouter from "./controllers/loginController";
 import registerRouter from "./controllers/registerController";
 
+import report8 from "./reports/report8";
+
 dotenv.config({ path: "../.env" });
 
 const port = process.env.BACKEND_PORT;
@@ -32,6 +34,8 @@ app.get("/", async (req: Request, res: Response) => {
 app.use("/register", registerRouter);
 
 app.use("/", loginRouter);
+
+app.use("/report-8", report8);
 
 app.listen(port, () => {
   console.log(`Server listening at http://localhost:${port}`);

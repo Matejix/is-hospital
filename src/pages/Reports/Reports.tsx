@@ -1,14 +1,14 @@
+import { useEffect, useState } from "react";
 import useReportItems from "@/hooks/useReportItems";
 import { Navbar, ScrollArea, Text } from "@mantine/core";
-import { Link } from "react-router-dom";
-
-type Props = {};
+import { Link, useLocation } from "react-router-dom";
 
 const Reports = () => {
   const reportItems = useReportItems();
   return (
     <Navbar
-      className="bg-blue-50 z-10"
+      id="navbarId"
+      className="bg-blue-50 z-10 transition duration-300"
       height={300}
       p="xs"
       width={{ base: 200 }}
