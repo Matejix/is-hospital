@@ -4,11 +4,23 @@ import { Navbar, ScrollArea, Text } from "@mantine/core";
 import { Link, useLocation } from "react-router-dom";
 
 const Reports = () => {
+  const selectListEl = document.getElementById("navbarId");
+  const { pathname } = useLocation();
+  const [isAnimating, setIsAnimating] = useState(false);
+  useEffect(() => {
+    if (pathname !== "/app") {
+      setIsAnimating(true);
+    }
+    if (isAnimating) {
+      selectListEl?.classList.remove("-translate-x-48");
+    }
+  }, [isAnimating]);
+
   const reportItems = useReportItems();
   return (
     <Navbar
       id="navbarId"
-      className="bg-blue-50 z-10 transition duration-300"
+      className="bg-blue-50 z-10 -translate-x-48 transition duration-300"
       height={300}
       p="xs"
       width={{ base: 200 }}
