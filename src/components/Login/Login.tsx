@@ -13,7 +13,7 @@ function Login() {
       if (response.status == 200) {
         localStorage.setItem("token", response.data.token);
         authorized();
-        //window.location.href = "/app";
+        window.location.href = "/app";
       }
     });
   };

@@ -10,18 +10,15 @@ loginRouter.post("/", async (req: Request, res: Response) => {
   const connection = await getDBConnection();
 
   const queryEmployeeRegistered = await connection?.execute(
-    `select * from is_zamestnanec_login WHERE id_zamestnanec = ${username}`
+    `select * from is_zamestnanec_login WHERE login = '${username}'`
   );
 
   if (queryEmployeeRegistered?.rows?.length == 1) {
     //if id of employee exist
 
-    const passwordQuery = await connection?.execute(
-      `select heslo from is_zamestnanec_login WHERE id_zamestnanec = ${username}`
-    );
 
-    var obj1 = JSON.parse(JSON.stringify(passwordQuery?.rows));
-    var passwordFromDb = obj1[0].HESLO;
+    var obj = JSON.parse(JSON.stringify(queryEmployeeRegistered?.rows));
+    var passwordFromDb = obj[0].HESLO;
 
     if (passwordFromDb == password) {
       const token = jwt.sign({ username: username }, "TODOOOSecret", {
