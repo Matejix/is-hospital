@@ -7,6 +7,9 @@
     "build": "tsc"
   },
   "dependencies": {
+    "@emotion/react": "^11.10.5",
+    "@mantine/core": "^5.8.3",
+    "@mantine/hooks": "^5.8.3",
     "@types/oracledb": "^5.2.3",
     "bcrypt": "^5.1.0",
     "cors": "^2.8.5",
