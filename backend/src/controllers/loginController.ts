@@ -27,7 +27,6 @@ loginRouter.post("/", async (req: Request, res: Response) => {
       const token = jwt.sign({ username: username }, "TODOOOSecret", {
         expiresIn: 300,
       });
-      console.log(token);
       console.log("User " + username + " logged in");
       res.json({ auth: true, token: token, result: username });
     }

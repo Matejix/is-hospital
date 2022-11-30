@@ -6,6 +6,7 @@ import getDBConnection from "./database";
 import loginRouter from "./controllers/loginController";
 import registerRouter from "./controllers/registerController";
 
+import report5 from "./reports/report5";
 import report8 from "./reports/report8";
 
 dotenv.config({ path: "../.env" });
@@ -35,6 +36,7 @@ app.use("/register", registerRouter);
 
 app.use("/", loginRouter);
 
+app.use("/report-5", report5);
 app.use("/report-8", report8);
 
 app.listen(port, () => {
