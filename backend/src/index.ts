@@ -7,6 +7,8 @@ import loginRouter from "./controllers/loginController";
 import registerRouter from "./controllers/registerController";
 
 import report8 from "./reports/report8";
+import report12 from "./reports/report12";
+import report11 from "./reports/report11";
 
 dotenv.config({ path: "../.env" });
 
@@ -35,7 +37,10 @@ app.use("/register", registerRouter);
 
 app.use("/", loginRouter);
 
+// Reporty
 app.use("/report-8", report8);
+app.use("/report-11", report11);
+app.use("/report-12", report12);
 
 app.listen(port, () => {
   console.log(`Server listening at http://localhost:${port}`);

@@ -15,6 +15,7 @@ function ReusableTable<T>({ data, tableHeaders, tableRow }: Props<T>) {
       tableEl?.classList.replace("translate-y-16", "translate-y-0");
     }, 500);
   }, []);
+
   const rows = data.map((element) => tableRow(element));
 
   return (
