@@ -1,4 +1,6 @@
 import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import Axios from "axios";
 // Pages
 import Home from "@/pages/Home";
 import Recipe from "@/pages/Recipe";
@@ -7,6 +9,7 @@ import PatientService from "@/pages/PatientService";
 import Schedule from "@/pages/Schedule";
 import Hospitalization from "@/pages/Hospitalization";
 import Requester from "@/pages/Requester";
+import Profile from "@/pages/Profile"
 
 // Reports
 import Reports from "@/pages/Reports";
@@ -79,6 +82,10 @@ const router = createBrowserRouter([
       {
         path: "requester",
         element: <Requester />,
+      },
+      {
+        path: "profile",
+        element: <Profile />,
       },
       {
         path: "reports",
