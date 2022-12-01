@@ -36,7 +36,7 @@ const Report8 = () => {
   ) : (
     <div className="w-full p-10">
       <h1 className="mb-10 text-2xl font-bold opacity-0 -translate-y-16 translate duration-300">
-        Počet osôb pre každú krvnú skupinu podľa pohlavia
+        Počet osôb pre každú krvnú skupinu podľa pohlavia mladších ako 60 rokov
         <div className="mt-2 max-w-md h-1 bg-gradient-to-r from-cyan-400 to-blue-500"></div>
       </h1>
       <ReusableTable

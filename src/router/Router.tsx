@@ -7,9 +7,10 @@ import PatientService from "@/pages/PatientService";
 import Schedule from "@/pages/Schedule";
 import Hospitalization from "@/pages/Hospitalization";
 import Requester from "@/pages/Requester";
+import Reports from "@/pages/Reports";
+import DataModel from "@/pages/DataModel";
 
 // Reports
-import Reports from "@/pages/Reports";
 import Report1 from "@/pages/Reports/Report1";
 import Report2 from "@/pages/Reports/Report2";
 import Report3 from "@/pages/Reports/Report3";
@@ -104,6 +105,10 @@ const router = createBrowserRouter([
           { path: "report-11", element: <Report11 /> },
           { path: "report-12", element: <Report12 /> },
         ],
+      },
+      {
+        path: "data-model",
+        element: <DataModel />,
       },
     ],
   },
