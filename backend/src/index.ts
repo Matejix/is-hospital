@@ -6,9 +6,11 @@ import getDBConnection from "./database";
 import loginRouter from "./controllers/loginController";
 import registerRouter from "./controllers/registerController";
 
+import report1 from "./reports/report1";
 import report2 from "./reports/report2";
 import report3 from "./reports/report3";
 import report5 from "./reports/report5";
+import report6 from "./reports/report6";
 import report7 from "./reports/report7";
 import report8 from "./reports/report8";
 import report10 from "./reports/report10";
@@ -45,9 +47,11 @@ app.use("/register", registerRouter);
 app.use("/", loginRouter);
 
 // Reporty
+app.use("/report-1", report1);
 app.use("/report-2", report2);
 app.use("/report-3", report3);
 app.use("/report-5", report5);
+app.use("/report-6", report6);
 app.use("/report-7", report7);
 app.use("/report-8", report8);
 app.use("/report-9", report9);
