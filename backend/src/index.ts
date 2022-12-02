@@ -10,8 +10,10 @@ import report2 from "./reports/report2";
 import report3 from "./reports/report3";
 import report5 from "./reports/report5";
 import report8 from "./reports/report8";
+import report10 from "./reports/report10";
 import report11 from "./reports/report11";
 import report12 from "./reports/report12";
+import report9 from "./reports/report9";
 
 import patientServiceRouter from "./controllers/patientServiceController";
 dotenv.config({ path: "../.env" });
@@ -41,12 +43,13 @@ app.use("/register", registerRouter);
 
 app.use("/", loginRouter);
 
-
 // Reporty
 app.use("/report-2", report2);
 app.use("/report-3", report3);
 app.use("/report-5", report5);
 app.use("/report-8", report8);
+app.use("/report-9", report9);
+app.use("/report-10", report10);
 app.use("/report-11", report11);
 app.use("/report-12", report12);
 app.use("/patientservice", patientServiceRouter);
