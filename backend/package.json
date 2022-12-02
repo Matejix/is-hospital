@@ -16,7 +16,8 @@
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "jsonwebtoken": "^8.5.1",
-    "oracledb": "^5.5.0"
+    "oracledb": "^5.5.0",
+    "xml-js": "^1.6.11"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",

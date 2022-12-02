@@ -70,9 +70,8 @@ function EmployeeCard({
                 </Text>
               </Group>
             </div>
-            <Text className="ml-10 mr-2 text-slate-700 font-bold tracking-wide p-3 border-2 border-blue-400 rounded-md block">
+            <Text className="w-56 ml-10 mr-2 text-cyan-600 font-bold tracking-wide p-3">
               {occupation}
-              <div className="w-30 h-30 bg-cyan-400"></div>
             </Text>
           </Group>
         </div>

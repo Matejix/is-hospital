@@ -23,7 +23,12 @@ const Report7 = () => {
     }
   }, []);
 
-  const labels = ["Muži", "Ženy"];
+  const labelsArray = backendData.map(({ POHLAVIE }) => {
+    return POHLAVIE === "z" ? "Ženy" : "Muži";
+  });
+  const filteredLabelsArray = [...new Set(labelsArray)];
+  console.log(filteredLabelsArray);
+  const labels = filteredLabelsArray;
   // SKLADANIE DÁT TAK ABY TO SEDELE S TYPOM DATASETS[]
   // V KOMPONENTE REUSABLECHART (GENEROVANE)
 
@@ -32,10 +37,10 @@ const Report7 = () => {
   //console.log(labelData);
 
   const bgColors = [
-    "rgba(88, 0, 255, 0.5)", // krvna skupina A
-    "rgba(0, 150, 255, 0.5)", // krvna skupina O
-    "rgba(0, 215, 255, 0.5)", // krvna skupina B
-    "rgba(114, 255, 255, 0.5)", // krvna skupina AB
+    "rgba(88, 0, 255, 0.5)", // fialova
+    "rgba(0, 150, 255, 0.5)", // modra
+    "rgba(0, 215, 255, 0.5)", // svetlo modra
+    "rgba(114, 255, 255, 0.5)", // najsvetlejšia modra
   ];
   const datas = filteredLabel.map((item, i) => {
     let arr = backendData.map(({ KS, POCET }) => {

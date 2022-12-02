@@ -21,7 +21,7 @@ const Reports = () => {
     <Navbar
       id="navbarId"
       className="bg-blue-50 z-10 -translate-x-48 transition duration-300"
-      height={300}
+      height={550}
       p="xs"
       width={{ base: 200 }}
     >
