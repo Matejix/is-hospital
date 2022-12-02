@@ -45,7 +45,7 @@ function Report10() {
       </h1>
       <div
         id="cards"
-        className="grid grid-cols-3 gap-10 opacity-0 translate-y-16 translate duration-300"
+        className="grid grid-cols-2 gap-10 opacity-0 translate-y-16 translate duration-300"
       >
         {employeeData.map(({ avatar, CELE_MENO, TITUL, TEL, EMAIL, NAZOV }) => {
           return (
