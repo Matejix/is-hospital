@@ -40,7 +40,6 @@ const Report11 = () => {
   useEffect(() => {
     try {
       axios.get("http://localhost:3000/report-11").then((res) => {
-        console.log(res.data);
         setEmployeeData(res.data);
       });
     } catch {
@@ -66,21 +65,8 @@ const Report11 = () => {
       counterEl?.classList.replace("opacity-0", "opacity-100");
     }, 1000);
   }, []);
-  /*const changeOutput =() => {
-    console.log(value);
-    try {
-      axios.post("http://localhost:3000/report-11", {
-        value: value,
-      }).then((res) => {
-        console.log(res.data);
-        setEmployeeData(res.data);
-      });
-    } catch {
-      console.log("chyba pri načitani");
-    }
-  };*/
+
   useEffect(() => {
-    console.log(value);
     try {
       axios.post("http://localhost:3000/report-11", {
         value: value,
@@ -104,12 +90,7 @@ const Report11 = () => {
           {" "}
           {numberOfResults + 1}
         </span>
-        <div className="mt-2 max-w-md h-1 bg-gradient-to-r from-cyan-400 to-blue-500">
-          
-        </div>
-     
-      </h1>
-      <div className="content-center w-full flex justify-center">
+        <div className="content-center w-full flex justify-center">
         <SegmentedControl
           value={value}
           onChange={setValue}
@@ -123,6 +104,11 @@ const Report11 = () => {
           className="m-5"
         />
       </div>
+        <div className="mt-2 max-w-md h-1 bg-gradient-to-r from-cyan-400 to-blue-500">
+        </div>
+     
+      </h1>
+    
       <ReusableTable
         data={employeeData}
         tableHeaders={["Názov oddelenia", "Zamestnanci"]}

@@ -13,7 +13,6 @@ report1.get("/", async (req: Request, res: Response) => {
     order by kvartal    
     `
   );
-  console.log(queryResult?.rows);
   res.json(queryResult?.rows);
 });
 

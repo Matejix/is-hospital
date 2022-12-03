@@ -32,8 +32,6 @@ report11.post("/", async (req: Request, res: Response) => {
   else
     lozkova_cast = 'A'
   
-    console.log(value);
-    console.log(lozkova_cast);
 
   const connection = await getDBConnection();
   const queryResult1 = await connection?.execute(

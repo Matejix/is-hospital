@@ -87,13 +87,13 @@ export function Menu() {
           {links}
         </Stack>
       </Navbar.Section>
-      <Navbar.Section >
+      {/* <Navbar.Section >
         <Stack justify="center" spacing={0}>
           <Link to="/app/profile" >
             <NavbarLink icon={IconUser}  label="Profile" />
           </Link>
         </Stack>
-      </Navbar.Section>
+      </Navbar.Section> */}
       <Navbar.Section>
         <Stack mb={10} justify="center" spacing={0}>
           <Link to="/"   onClick={logout}>

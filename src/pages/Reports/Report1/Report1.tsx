@@ -42,7 +42,6 @@ const Report1 = () => {
   });
   const labels = labelsArray; // os-x nazvy
 
-  const labelData = ["Počet", "Počet vyšetrení", "Počet medikácií"]; // legenda grafu
 
   const bgColors = [
     "rgba(88, 0, 255, 0.5)", // fialova
@@ -59,32 +58,24 @@ const Report1 = () => {
   let arrVysetrenia =  backendData.map(({ POCET_VYSETRENI }) => {
     return POCET_VYSETRENI;
   });
-  const datas1 = labelData.map((item, i) => {
-    return {
-      // VYTVORENIE OBJEKTU
-      label: 'Medikácie',
-      data: arrMedikacie,
+  const label = ["Počet výkonov", "Počet vyšetrení", "Počet medikácií"];
+  const datasets = [
+    {
+      label: label[0],
+      data: arrVykony,
+      backgroundColor: bgColors[0],
+    },
+    {
+      label: label[1],
+      data: arrVysetrenia,
       backgroundColor: bgColors[1],
-    };
-  });
-  const datas2 = labelData.map((item, i) => {
-    return {
-      // VYTVORENIE OBJEKTU
-      label: 'Výkony',
-      data: arrVykony,
+    },
+    {
+      label: label[2],
+      data: arrMedikacie,
       backgroundColor: bgColors[2],
-    };
-  }); 
-  const datas3 = labelData.map((item, i) => {
-    return {
-      // VYTVORENIE OBJEKTU
-      label: 'Vyšetrenia',
-      data: arrVykony,
-      backgroundColor: bgColors[3],
-    };
-  });
-
-  //var datasett:Datasets[] = [datas1,datas2,datas3]  ;
+    }
+  ];
 
   useEffect(() => {
     const h1El = document.querySelector("h1");
@@ -115,7 +106,7 @@ const Report1 = () => {
           </tr>
         )}
       />
-      <ReusableChart labels={labels} datasets={datas1} />
+      <ReusableChart labels={labels} datasets={datasets} />
     </div>
   );
 };

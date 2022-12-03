@@ -34,7 +34,8 @@ const Report7 = () => {
 
   const labelData = backendData.map(({ KS }) => KS);
   const filteredLabel = [...new Set(labelData)]; // ZBAVENIE SA DUPLICIT
-  //console.log(labelData);
+  console.log(labelData);
+  console.log(filteredLabel); //nazvy pocty - skupiny
 
   const bgColors = [
     "rgba(88, 0, 255, 0.5)", // fialova
@@ -49,14 +50,17 @@ const Report7 = () => {
     let arr2 = arr.filter((item) => {
       return item !== undefined; // VYMAZE UNDEFINED HODNOTY Z POLA
     }) as number[];
+    console.log(arr2);
+
     return {
+
       // VYTVORENIE OBJEKTU
       label: item,
       data: arr2,
       backgroundColor: bgColors[i],
     };
   });
-  //console.log(datas);
+  console.log(datas);
 
   // NATVRDO NAPÍSANE HODNOTY
   // const datasets = [
