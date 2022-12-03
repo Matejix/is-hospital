@@ -2,7 +2,7 @@ import getDBConnection from "../database";
 import express, { Request, Response } from "express";
 
 interface Row {
-  ODDELENIA: string;
+  ZIADANKY: string;
 }
 
 const report12 = express.Router();
@@ -10,10 +10,18 @@ const report12 = express.Router();
 report12.get("/", async (req: Request, res: Response) => {
   const connection = await getDBConnection();
   const queryResult1 = await connection?.execute(
-    `select json_object('nazov_oddelenia' value ito.informacie_oddelenia.nazov_oddelenia,'doktori' value json_arrayagg(iso.titul || ' ' ||iso.meno || ' ' || iso.priezvisko)) as oddelenia from is_typ_oddelenia ito left join is_oddelenia io on(io.id_typu_oddelenia = ito.id_typu_oddelenia) left join is_zdravotnik iz on(io.id_zamestnanec = iz.id_zamestnanec) left join is_zamestnanec iza on(iza.id_zamestnanec = iz.id_zamestnanec) left join is_osoba iso on(iso.rod_cislo = iza.rod_cislo) where ito.informacie_oddelenia.lozkova_cast like 'A' group by ito.informacie_oddelenia.nazov_oddelenia`
+    `select json_object('oddelenia' value  ito.informacie_oddelenia.nazov_oddelenia || ' - ' || ito.informacie_oddelenia.popis_oddelenia  , 
+    'pacienti' value json_arrayagg(to_char(dat_vystavenia,'DD.MM.YYYY') || ' - ' || meno || ' ' || priezvisko)) as ziadanky
+    from is_typ_oddelenia ito
+    join is_ziadanky using (id_typu_oddelenia)
+    join is_osoba using (rod_cislo)
+    join is_pacient using (rod_cislo)
+    where to_char(dat_vystavenia,'YYYY') = to_char(sysdate,'YYYY')-1
+    group by ito.informacie_oddelenia.nazov_oddelenia,
+    ito.informacie_oddelenia.popis_oddelenia`
   );
   const data = (queryResult1?.rows as Row[])?.map((row) => ({
-    ODDELENIA: JSON.parse(row.ODDELENIA),
+    ZIADANKY: JSON.parse(row.ZIADANKY),
   }));
   res.json(data);
 });

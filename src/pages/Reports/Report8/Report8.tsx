@@ -3,10 +3,9 @@ import axios from "axios";
 import react, { useState, useEffect } from "react";
 
 interface ReportInterface {
-  KS: string;
-  POCET: number;
-  POHLAVIE: string;
-  RANK: number;
+  NAZOV_KRAJA: string;
+  POCET_NARODENYCH: string;
+  POCET_ZOSNULYCH: number;
 }
 
 const Report8 = () => {
@@ -36,22 +35,17 @@ const Report8 = () => {
   ) : (
     <div className="w-full p-10">
       <h1 className="mb-10 text-2xl font-bold opacity-0 -translate-y-16 translate duration-300">
-        Počet osôb pre každú krvnú skupinu podľa pohlavia mladších ako 60 rokov
+        Počty narodených a zosnulých pacientov pre jednotlivé kraje za posledných 10 rokov
         <div className="mt-2 max-w-md h-1 bg-gradient-to-r from-cyan-400 to-blue-500"></div>
       </h1>
       <ReusableTable
         data={backendData}
-        tableHeaders={["Krvna skupina", "Počet osôb", "Pohlavie"]}
-        tableRow={({ KS, POCET, POHLAVIE, RANK }) => (
-          <tr
-            key={RANK + POCET}
-            className={`transition duration-300 bg-gradient-to-l ${
-              POHLAVIE === "z" ? "hover:bg-pink-100" : "hover:bg-blue-100"
-            }`}
-          >
-            <td>{KS}</td>
-            <td>{POCET}</td>
-            <td>{POHLAVIE === "m" ? "Muž" : "Žena"}</td>
+        tableHeaders={["Kraj", "Počet narodených", "Počet zosnulých"]}
+        tableRow={({ NAZOV_KRAJA, POCET_NARODENYCH, POCET_ZOSNULYCH }) => (
+          <tr>
+            <td>{NAZOV_KRAJA}</td>
+            <td>{POCET_NARODENYCH}</td>
+            <td>{POCET_ZOSNULYCH }</td>
           </tr>
         )}
       />

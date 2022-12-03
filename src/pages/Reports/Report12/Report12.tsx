@@ -3,9 +3,9 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 
 interface Report12 {
-  ODDELENIA: {
-    nazov_oddelenia: string;
-    doktori: string[];
+  ZIADANKY: {
+    oddelenia: string;
+    pacienti: string[];
   };
 }
 
@@ -45,22 +45,24 @@ const Report12 = () => {
   return (
     <div className="w-full p-10">
       <h1 className="mb-10 text-2xl font-bold opacity-0 -translate-y-16 translate duration-300">
-        Oddelenia s lôžkovou časťou. Počet:{" "}
+        Žiadanky predpísané na jednotlivé oddelenia počas posledného roka. Počet:{" "}
         <span className="counter text-cyan-700 text-3xl inline-block opacity-0 -translate-y-16 translate duration-300">
           {" "}
           {numberOfResults + 1}
         </span>
         <div className="mt-2 max-w-md h-1 bg-gradient-to-r from-cyan-400 to-blue-500"></div>
       </h1>
-      <ReusableTable
+      <ReusableTable 
         data={employeeData}
-        tableHeaders={["Názov oddelenia", "Zamestnanci"]}
-        tableRow={({ ODDELENIA }) => (
-          <tr className="hover:bg-blue-100" key={ODDELENIA.nazov_oddelenia}>
-            <td>{ODDELENIA.nazov_oddelenia}</td>
-            <td>{ODDELENIA.doktori.join(",")}</td>
+        
+        tableHeaders={["Názov oddelenia", "Predpísané žiadanky"]}
+        tableRow={({ ZIADANKY }) => (
+          <tr className="hover:bg-blue-100" key={ZIADANKY.oddelenia}>
+            <td className="w-[60%] text-blue-900/100 font-medium">{ZIADANKY.oddelenia}</td>
+            <td>{ZIADANKY.pacienti.map(s=><React.Fragment>{s}<br/></React.Fragment>)}</td>
           </tr>
-        )}
+        )
+      } 
       />
     </div>
   );

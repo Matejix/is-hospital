@@ -1,7 +1,13 @@
 import ReusableTable from "@/components/ReusableTable";
+import ReusableChart from "@/components/ReusableChart";
+
 import axios from "axios";
 import react, { useState, useEffect } from "react";
-
+type Datasets = {
+  label: string;
+  data: number[];
+  backgroundColor: string;
+};
 interface ReportInterface {
   POCET_VYSETRENI: number;
   POCET_VYKONOV: number;
@@ -22,6 +28,63 @@ const Report1 = () => {
       console.log("chyba pri načitani");
     }
   }, []);
+
+  useEffect(() => {
+    const h1El = document.querySelector("h1");
+    setTimeout(() => {
+      h1El?.classList.replace("opacity-0", "opacity-100");
+      h1El?.classList.replace("-translate-y-16", "-translate-y-0");
+    }, 500);
+  }, []);
+
+  var labelsArray = backendData.map(({ KVARTAL }) => {
+    return KVARTAL.toString();
+  });
+  const labels = labelsArray; // os-x nazvy
+
+  const labelData = ["Počet", "Počet vyšetrení", "Počet medikácií"]; // legenda grafu
+
+  const bgColors = [
+    "rgba(88, 0, 255, 0.5)", // fialova
+    "rgba(0, 150, 255, 0.5)", // modra
+    "rgba(0, 215, 255, 0.5)", // svetlo modra
+    "rgba(114, 255, 255, 0.5)", // najsvetlejšia modra
+  ];
+  let arrMedikacie = backendData.map(({ POCET_MEDIKACII }) => {
+    return POCET_MEDIKACII;
+  });
+  let arrVykony =  backendData.map(({ POCET_VYKONOV }) => {
+    return POCET_VYKONOV;
+  });
+  let arrVysetrenia =  backendData.map(({ POCET_VYSETRENI }) => {
+    return POCET_VYSETRENI;
+  });
+  const datas1 = labelData.map((item, i) => {
+    return {
+      // VYTVORENIE OBJEKTU
+      label: 'Medikácie',
+      data: arrMedikacie,
+      backgroundColor: bgColors[1],
+    };
+  });
+  const datas2 = labelData.map((item, i) => {
+    return {
+      // VYTVORENIE OBJEKTU
+      label: 'Výkony',
+      data: arrVykony,
+      backgroundColor: bgColors[2],
+    };
+  }); 
+  const datas3 = labelData.map((item, i) => {
+    return {
+      // VYTVORENIE OBJEKTU
+      label: 'Vyšetrenia',
+      data: arrVykony,
+      backgroundColor: bgColors[3],
+    };
+  });
+
+  //var datasett:Datasets[] = [datas1,datas2,datas3]  ;
 
   useEffect(() => {
     const h1El = document.querySelector("h1");
@@ -52,6 +115,7 @@ const Report1 = () => {
           </tr>
         )}
       />
+      <ReusableChart labels={labels} datasets={datas1} />
     </div>
   );
 };
