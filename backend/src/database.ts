@@ -10,6 +10,7 @@ const connectionDBConfig = {
 };
 
 oracledb.outFormat = oracledb.OUT_FORMAT_OBJECT;
+oracledb.fetchAsBuffer = [oracledb.BLOB];
 
 try {
   // initialize oracle's JAVA client

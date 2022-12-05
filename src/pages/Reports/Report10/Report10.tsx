@@ -4,7 +4,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 
 interface Report10 {
-  avatar: string;
+  FOTOGRAFIA: Buffer;
   CELE_MENO: string;
   TITUL: string;
   TEL: string;
@@ -47,18 +47,20 @@ function Report10() {
         id="cards"
         className="grid grid-cols-2 gap-10 opacity-0 translate-y-16 translate duration-300"
       >
-        {employeeData.map(({ avatar, CELE_MENO, TITUL, TEL, EMAIL, NAZOV }) => {
-          return (
-            <EmployeeCard
-              avatar={avatar}
-              name={CELE_MENO}
-              title={TITUL}
-              phone={TEL}
-              email={EMAIL}
-              occupation={NAZOV}
-            />
-          );
-        })}
+        {employeeData.map(
+          ({ FOTOGRAFIA, CELE_MENO, TITUL, TEL, EMAIL, NAZOV }) => {
+            return (
+              <EmployeeCard
+                avatar={FOTOGRAFIA}
+                name={CELE_MENO}
+                title={TITUL}
+                phone={TEL}
+                email={EMAIL}
+                occupation={NAZOV}
+              />
+            );
+          }
+        )}
       </div>
     </div>
   );

@@ -3,7 +3,7 @@ import { IconPhoneCall, IconAt } from "@tabler/icons";
 import { ReactNode } from "react";
 
 interface UserInfoIconsProps {
-  avatar: string;
+  avatar: Buffer;
   name: string;
   title: string;
   phone: string;
@@ -37,7 +37,11 @@ function EmployeeCard({
       <Card.Section>
         <div className="text-slate-700">
           <Group noWrap>
-            <Avatar src={avatar} size={94} radius="md" />
+            <Avatar
+              src={`data:image/jpeg;base64,${avatar}`}
+              size={94}
+              radius="md"
+            />
             <div>
               <Text
                 size="xs"
