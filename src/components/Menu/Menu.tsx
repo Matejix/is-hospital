@@ -5,10 +5,10 @@ import {
   IconHome2,
   IconLogout,
   IconArrowLeft,
-  IconUser
+  IconUser,
 } from "@tabler/icons";
 import logo from "../../assets/logo-white.png";
-
+import useTokenData from "@/hooks/useTokenData";
 interface NavbarLinkProps {
   icon: TablerIcon;
   label: string;
@@ -39,7 +39,7 @@ function NavbarLink({ icon: Icon, label, active, onClick }: NavbarLinkProps) {
   //   ? "bg-teal-300 text-slate-100 m-2"
   //   : "text-slate-100 m-2";
   const hoverEffects = "";
- 
+
   return (
     <Tooltip
       label={label}
@@ -63,9 +63,9 @@ const mockdata = [{ icon: IconHome2, label: "Domov", linkTo: "/app" }];
 
 export function Menu() {
   const { pathname } = useLocation();
-  const logout = (()=> {
+  const logout = () => {
     localStorage.removeItem("token");
- });
+  };
   const links = mockdata.map((link, index) => (
     <Link to={link.linkTo} key={link.linkTo}>
       <NavbarLink
@@ -75,7 +75,7 @@ export function Menu() {
       />
     </Link>
   ));
-
+  const data = useTokenData();
   return (
     <Navbar className="fixed w-24 h-screen bg-gradient-to-b from-blue-500 to-blue-400 items-center">
       <Center>
@@ -87,17 +87,11 @@ export function Menu() {
           {links}
         </Stack>
       </Navbar.Section>
-      {/* <Navbar.Section >
-        <Stack justify="center" spacing={0}>
-          <Link to="/app/profile" >
-            <NavbarLink icon={IconUser}  label="Profile" />
-          </Link>
-        </Stack>
-      </Navbar.Section> */}
+      <Navbar.Section>{data.id_employee}</Navbar.Section>
       <Navbar.Section>
         <Stack mb={10} justify="center" spacing={0}>
-          <Link to="/"   onClick={logout}>
-            <NavbarLink icon={IconLogout}  label="Logout" />
+          <Link to="/" onClick={logout}>
+            <NavbarLink icon={IconLogout} label="Logout" />
           </Link>
         </Stack>
       </Navbar.Section>

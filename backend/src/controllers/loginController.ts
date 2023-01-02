@@ -17,7 +17,6 @@ loginRouter.post("/", async (req: Request, res: Response) => {
   if (queryEmployeeRegistered?.rows?.length == 1) {
     //if id of employee exist
 
-
     var obj = JSON.parse(JSON.stringify(queryEmployeeRegistered?.rows));
     var passwordFromDb = obj[0].HESLO;
     bcrypt.compare(password, passwordFromDb).then(async (match) => {
@@ -25,35 +24,42 @@ loginRouter.post("/", async (req: Request, res: Response) => {
         res.status(400).json({ message: "Login unsuccessful!" });
       } else {
         var employeeType = await getRole(username);
-        const token = jwt.sign({ username: username,
-          role: employeeType
-         }, "TODOOOSecret", {
-          expiresIn: 300,
-        });
-        
+        const token = jwt.sign(
+          {
+            username: username,
+            role: employeeType,
+            id_employee: obj[0].ID_ZAMESTNANEC,
+          },
+          "TODOOOSecret",
+          {
+            expiresIn: 300,
+          }
+        );
+
         console.log("User " + username + " logged in");
         res.json({ auth: true, token: token, result: username });
       }
     });
-   
   }
 });
 
-async function  getRole ( username: number) { //TODO vytvorit spolocny subor pre pomocne funkcie 
+async function getRole(username: number) {
+  //TODO vytvorit spolocny subor pre pomocne funkcie
   const connection = await getDBConnection();
   const query = await connection?.execute(
-    `select typ_zamestnanca from is_zamestnanec WHERE id_zamestnanec = ${username.toString().slice(2)}`
+    `select typ_zamestnanca from is_zamestnanec WHERE id_zamestnanec = ${username
+      .toString()
+      .slice(2)}`
   );
   var obj = JSON.parse(JSON.stringify(query?.rows));
   var type = obj[0].TYP_ZAMESTNANCA;
-  if(type == "1"){
+  if (type == "1") {
     var role = "Zdravotnik";
-  } else { 
+  } else {
     var role = "Administrator";
   }
   return role;
-};
-
+}
 
 loginRouter.get("/auth", validateToken, (req: Request, res: Response) => {
   res.send("Authorized.");

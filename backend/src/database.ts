@@ -8,7 +8,7 @@ const connectionDBConfig = {
   password: process.env.DB_PASSWORD,
   connectString: `(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(Host=${process.env.DB_HOST})(Port=${process.env.DB_PORT}))(CONNECT_DATA=(SID=${process.env.DB_SID})))`,
 };
-
+oracledb.autoCommit = true;
 oracledb.outFormat = oracledb.OUT_FORMAT_OBJECT;
 oracledb.fetchAsBuffer = [oracledb.BLOB];
 
