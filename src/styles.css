@@ -27,7 +27,8 @@
 
 }
 
-.records {
-    max-height: 60%;
+.RecordsPanel {
+    max-height: 400px;
+
 
 }

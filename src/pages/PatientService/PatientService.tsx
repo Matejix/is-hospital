@@ -1,5 +1,9 @@
 import { useEffect, useState } from "react";
 import "../../styles.css";
+
+import useTokenData from "@/hooks/useTokenData";
+
+import {BasicInfo, Prescriptions, Records, Requests} from "@/types"
 import {
   createStyles,
   Table,
@@ -10,7 +14,8 @@ import {
   Center,
   TextInput,
   Menu,
-  ActionIcon, Accordion, Tabs 
+  ActionIcon, Accordion, Tabs,
+  LoadingOverlay
 } from "@mantine/core";
 import { keys } from "@mantine/utils";
 import {
@@ -25,7 +30,7 @@ import {
   IconDots,
 } from "@tabler/icons";
 import axios from "axios";
-import internal from "stream";
+
 
 const useStyles = createStyles((theme) => ({
   th: {
@@ -68,51 +73,8 @@ interface RowData {
   CELE_MENO: string;
   ROD_CISLO: string;
 }
-interface BasicInfo {
-  ROD_CISLO: string;
-  TITUL: string;
-  MENO: string;
-  PRIEZVISKO: string;
-  RODNE_PRIEZVISKO: string;
-  ULICA: string;
-  PSC: string;
-  NAZOV_MESTA: string;
-  DATUM_NARODENIA: Date;
-  DATUM_UMRTIA: Date;
-  KRVNA_SKUPINA: string;
-  ZAMESTNANIE: string; 
-  POISTOVNA: string;
-}
 
-interface Records {
-  ID_ZAZNAM: string;
-  DATUM_ZAZNAMU: Date;
-  ZAZNAM: string;
-  TYP: string;
-  POPIS: string;
-  DAVKOVANIE_MEDIKACIE: string;
-  NAZOV_DIAGNOZY: string;
-  VYSTAVIL: string;
-}
 
-interface Requests {
-  ID_ZIADANKY: string;
-  DAT_VYSTAVENIA: Date;
-  POPIS: string;
-  NAZOV_DIAGNOZY: string;
-  VYSTAVIL: string;
-  ODDELENIE: string;
-}  
-
-interface Prescriptions {
-  KOD: string;
-  VYSTAVIL: string;
-  LIEK: string;
-}  
-
-interface TableSortProps {
-  data: RowData[];
-}
 interface ThProps {
   children: React.ReactNode;
   reversed: boolean;
@@ -171,12 +133,6 @@ function sortData(
   );
 }
 
-function MainBlockComponent() {
-  return (<div>
-    Main block, click on user
-  </div>)
-}
-
 function PatientService() {
   const { classes } = useStyles();
 
@@ -188,51 +144,75 @@ function PatientService() {
   const [patientRecords, setPatientRecords] = useState<Records[] | null>(null);
   const [patientRequests, setPatientRequests] = useState<Requests[] | null>(null);
   const [patientPrescriptions, setPatientPrescriptions] = useState<Prescriptions[] | null>(null);
-
+  const [loading, setLoading] = useState(false);
   const [choosenPatient, setChoosenPatient] = useState("");
   const [search, setSearch] = useState("");
   const [sortedData, setSortedData] = useState(patients);
   const [sortBy, setSortBy] = useState<keyof RowData | null>(null);
   const [reverseSortDirection, setReverseSortDirection] = useState(false);
 
+  const employeeData = useTokenData();
+
   const getUsers = () => {
-    axios
-      .get("http://localhost:3000/patientservice/getPatients")
-      .then((response: any) => {
-        setPatients(response.data);
-        setChoosenPatient(response.data[0].ROD_CISLO);
-      });
+    // axios.post("http://localhost:3000/patientservice/getDepartmentPatients", {
+    //   id: employeeData.id_employee
+    // }).then((response: any) => {
+    //   setPatients(response.data);
+    //   setChoosenPatient(response.data[0].ROD_CISLO);
+    // }); 
+    
+    axios.get("http://localhost:3000/patientservice/getPatients")
+    .then((response: any) => {
+      setPatients(response.data);
+      setChoosenPatient(response.data[0].ROD_CISLO);
+    });
   };
 
   const getPatientInfo = () => {
+    setLoading(true);
     axios.post("http://localhost:3000/patientservice/getBasicInfo", {
       id: choosenPatient
     }).then((response: any) => {
         setBasicInfo(response.data[0]);
+        setLoading(false);
+
     });
+
   };
   
   const getPatientRecords = () => {
+    setLoading(true);
+
     axios.post("http://localhost:3000/patientservice/getListOfRecords", {
       id: choosenPatient
     }).then((response: any) => {
         setPatientRecords(response.data);
+        setLoading(false);
+
     });
   };
 
   const getPatientRequests = () => {
+    setLoading(true);
+
     axios.post("http://localhost:3000/patientservice/getRequests", {
       id: choosenPatient
     }).then((response: any) => {
         setPatientRequests(response.data);
+        setLoading(false);
+
     });
   };
 
   const getPatientPrescriptions = () => {
+    setLoading(true);
+
     axios.post("http://localhost:3000/patientservice/getPrescriptions", {
       id: choosenPatient
     }).then((response: any) => {
         setPatientPrescriptions(response.data);
+        setLoading(false);
+
     });
   };
 
@@ -240,36 +220,27 @@ function PatientService() {
 
   useEffect(() => {
     if (patients !== null && sortedData === null && sortBy === null) {
+
       setSortedData(patients);
       setChoosenPatient(patients[0].ROD_CISLO);
       getPatientInfo();
       getPatientRecords();
       getPatientRequests();
       getPatientPrescriptions();
+
+
     }
   }, [patients]);
 
   useEffect(() => {
     if (patients !== null ) {
       getPatientInfo();
+      getPatientRecords();
+      getPatientRequests();
+      getPatientPrescriptions();
+
     }
   }, [choosenPatient]);
-
-  useEffect(() => {
-    getPatientInfo();
-  }, [basicInfo])
-
-  useEffect(() => {
-    getPatientRecords();
-  }, [patientRecords])
-
-  useEffect(() => {
-    getPatientRequests();
-  }, [patientRequests])
-
-  useEffect(() => {
-    getPatientPrescriptions();
-  }, [patientPrescriptions])
 
 
 
@@ -297,6 +268,10 @@ function PatientService() {
   const choosePerson = (row : RowData) => {
     setChoosenPatient(row.ROD_CISLO);
     getPatientInfo();
+    getPatientRecords();
+    getPatientRequests();
+    getPatientPrescriptions();
+
   };
   
   const rows = sortedData?.map((row: any) => (
@@ -334,6 +309,7 @@ function PatientService() {
           <p> {row.POPIS}</p>
           <p> {row.DAVKOVANIE_MEDIKACIE ? 'Dávkovanie medikácie: ' + row.DAVKOVANIE_MEDIKACIE : ''}</p>
           <p> {row.NAZOV_DIAGNOZY ? 'Diagnóza: ' + row.NAZOV_DIAGNOZY : ''}</p>
+          <p> {row.ODDELENIE ? 'Oddelenie: ' + row.ODDELENIE : ''}</p>
           <p> {row.VYSTAVIL ? 'Vystavil: ' + row.VYSTAVIL : ''}</p>
         </Accordion.Panel>
       </Accordion.Item>
@@ -375,14 +351,15 @@ function PatientService() {
 
   return (
     <div className="PatientsInfo">
-      <div className="TableBlock">
-        <ScrollArea>
+      <div className="TableBlock  m-2 pt-20 p-2 drop-shadow-lg">
+        <ScrollArea className="bg-white ">
           <TextInput
             placeholder="Prehľadávať"
             mb="md"
             icon={<IconSearch size={14} stroke={1.5} />}
             value={search}
             onChange={handleSearchChange}
+            className ="p-2"
           />
           <Table
             horizontalSpacing="xs"
@@ -441,7 +418,9 @@ function PatientService() {
       </div>
       <div className="MoreInfo">
        <div className="grid h-screen place-items-center">
-        <div className="CardInfo drop-shadow-lg bg-white    fixed">
+        <div className="CardInfo drop-shadow-lg bg-white  fixed">
+        <LoadingOverlay visible={loading} overlayBlur={2} />
+
           <div className="py-3 px-6 bg-slate-100	 border-b border-gray-300 flex justify-between	 ">
             <a className=" font-semibold"> Zdravotná karta </a> 
             <a className="text-cyan-900	"> {basicInfo?.ROD_CISLO}</a>
@@ -473,7 +452,7 @@ function PatientService() {
               <h5 className="pb-1"> {basicInfo?.ZAMESTNANIE ? basicInfo.ZAMESTNANIE : "-"} </h5>
             </div>
           </div>
-          <div >
+          <div  >
 
           <Tabs  defaultValue="Records">
               <Tabs.List className=" px-6 bg-slate-100	  ">
@@ -483,18 +462,22 @@ function PatientService() {
               </Tabs.List>
 
               <Tabs.Panel value="Records" pt="xs">
-              <div className="records overflow-y-auto"          >
-                {listOfRecords}
+              <div className="RecordsPanel overflow-auto">
+                 {listOfRecords}
              </div>
               </Tabs.Panel>
 
               <Tabs.Panel value="Requests" pt="xs">
-                {listOfRequests}
-              </Tabs.Panel>
+              <div className="RecordsPanel overflow-auto">
+                 {listOfRequests}
+             </div>              
+             </Tabs.Panel>
 
               <Tabs.Panel value="Prescription" pt="xs">
-                {listOfPrescriptions}
-              </Tabs.Panel>
+              <div className="RecordsPanel overflow-auto">
+                 {listOfPrescriptions}
+             </div>              
+             </Tabs.Panel>
             </Tabs>
 
 
