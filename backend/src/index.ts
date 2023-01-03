@@ -20,6 +20,7 @@ import report12 from "./reports/report12";
 import report9 from "./reports/report9";
 
 import patientServiceRouter from "./controllers/patientServiceController";
+import hospitalizationRouter from "./controllers/hospitalizationController";
 dotenv.config({ path: "../.env" });
 
 const port = process.env.BACKEND_PORT;
@@ -61,6 +62,7 @@ app.use("/report-10", report10);
 app.use("/report-11", report11);
 app.use("/report-12", report12);
 app.use("/patientservice", patientServiceRouter);
+app.use("/hospitalization", hospitalizationRouter);
 
 app.listen(port, () => {
   console.log(`Server listening at http://localhost:${port}`);
