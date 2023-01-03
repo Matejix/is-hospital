@@ -60,6 +60,7 @@ function Recipe() {
       medicine: (value) => (!value.length ? "Zvoľte nejaky liek" : null),
     },
   });
+  console.log(form);
   useEffect(() => getUsers(), []);
   useEffect(() => getMedicine(), []);
 
@@ -82,7 +83,7 @@ function Recipe() {
       </h1>
       <form
         className="flex flex-col w-3/4 m-auto pl-6 pr-6 pt-14 pb-14 bg-white shadow-xl border-2 border-slate-100 opacity-0 translate-y-16 translate duration-300"
-        onSubmit={form.onSubmit((values) => console.log(values))}
+        onSubmit={form.onSubmit(form.reset)}
         onReset={form.onReset}
       >
         <div className="flex justify-between mb-8">
