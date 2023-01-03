@@ -8,7 +8,6 @@ import {
   IconUser,
 } from "@tabler/icons";
 import logo from "../../assets/logo-white.png";
-import useTokenData from "@/hooks/useTokenData";
 interface NavbarLinkProps {
   icon: TablerIcon;
   label: string;
@@ -75,7 +74,7 @@ export function Menu() {
       />
     </Link>
   ));
-  const data = useTokenData();
+
   return (
     <Navbar className="fixed w-24 h-screen bg-gradient-to-b from-blue-500 to-blue-400 items-center">
       <Center>
@@ -87,7 +86,6 @@ export function Menu() {
           {links}
         </Stack>
       </Navbar.Section>
-      <Navbar.Section>{data.id_employee}</Navbar.Section>
       <Navbar.Section>
         <Stack mb={10} justify="center" spacing={0}>
           <Link to="/" onClick={logout}>

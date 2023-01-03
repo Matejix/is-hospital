@@ -63,26 +63,45 @@ function Recipe() {
   useEffect(() => getUsers(), []);
   useEffect(() => getMedicine(), []);
 
+  useEffect(() => {
+    const h1El = document.querySelector("h1");
+    const formEl = document.querySelector("form");
+    setTimeout(() => {
+      h1El?.classList.replace("opacity-0", "opacity-100");
+      h1El?.classList.replace("-translate-y-16", "-translate-y-0");
+      formEl?.classList.replace("opacity-0", "opacity-100");
+      formEl?.classList.replace("translate-y-16", "translate-y-0");
+    }, 500);
+  }, []);
+
   return (
-    <div>
-      <div>
-        <form
-          className="w-6/12"
-          onSubmit={form.onSubmit((values) => console.log(values))}
-          onReset={form.onReset}
-        >
+    <div className="mt-10 m-auto w-2/3">
+      <h1 className="mb-10 text-4xl font-bold text-center tracking-widest opacity-0 -translate-y-16 translate duration-300">
+        Predpis lieku
+        <div className="mt-2 m-auto max-w-xs h-1 bg-gradient-to-r from-cyan-400 to-blue-500"></div>
+      </h1>
+      <form
+        className="flex flex-col w-3/4 m-auto pl-6 pr-6 pt-14 pb-14 bg-white shadow-xl border-2 border-slate-100 opacity-0 translate-y-16 translate duration-300"
+        onSubmit={form.onSubmit((values) => console.log(values))}
+        onReset={form.onReset}
+      >
+        <div className="flex justify-between mb-8">
           <TextInput
+            className="basis-1/6"
             withAsterisk
             label="ID doktora"
             {...form.getInputProps("id_employee")}
           />
           <DatePicker
+            className="basis-1/4"
             withAsterisk
             label="Dátum"
             {...form.getInputProps("date")}
           />
 
           <Select
+            className="basis-1/2"
+            withAsterisk
             label="Vyberte pacienta"
             placeholder="Zvoľte jedného pacienta"
             data={patients.map((patient) => ({
@@ -99,31 +118,38 @@ function Recipe() {
             nothingFound="Prázdny zoznam"
             {...form.getInputProps("id_patient")}
           />
-          <MultiSelect
-            label="Vyberte liek"
-            placeholder="Zvoľte liek"
-            data={medicines.map((medicine) => ({
-              value: medicine.ID_KOD_LIEKU,
-              label: medicine.ID_KOD_LIEKU + " " + medicine.NAZOV,
-            }))}
-            searchable
-            clearable
-            maxDropdownHeight={400}
-            nothingFound="Prázdny zoznam"
-            {...form.getInputProps("medicine")}
-          />
+        </div>
+        <MultiSelect
+          className="mb-8"
+          label="Vyberte liek"
+          placeholder="Zvoľte liek"
+          data={medicines.map((medicine) => ({
+            value: medicine.ID_KOD_LIEKU,
+            label: medicine.ID_KOD_LIEKU + " " + medicine.NAZOV,
+          }))}
+          searchable
+          limit={100}
+          clearable
+          maxDropdownHeight={300}
+          nothingFound="Prázdny zoznam"
+          {...form.getInputProps("medicine")}
+        />
 
-          <Textarea
-            label="Popis"
-            description="Popis uživania liekov"
-            radius="md"
-            {...form.getInputProps("description")}
-          />
-          <Button onClick={sendRecipe} className="bg-blue-400" type="submit">
-            Odoslať
-          </Button>
-        </form>
-      </div>
+        <Textarea
+          className="mb-8"
+          label="Popis"
+          description="Popis uživania liekov"
+          radius="md"
+          {...form.getInputProps("description")}
+        />
+        <Button
+          onClick={sendRecipe}
+          className="w-1/4 m-auto text-xl bg-blue-400 hover:-translate-y-1 hover:shadow-md transition-all duration-300 "
+          type="submit"
+        >
+          Odoslať
+        </Button>
+      </form>
     </div>
   );
 }
