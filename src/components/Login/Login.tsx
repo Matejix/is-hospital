@@ -3,55 +3,55 @@ import { useForm } from "@mantine/form";
 import Axios from "axios";
 import { Link } from "react-router-dom";
 import logo from "../../assets/logo.png";
-import {ToastContainer, toast} from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
-import React, { useState, useEffect } from 'react';
-
-
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import React, { useState, useEffect } from "react";
 
 function Login() {
   const loginEmployee = () => {
     Axios.post("http://localhost:3000/", {
       username: form.values.username,
       password: form.values.password,
-    }).then((response: any) => {
-      console.log(response);
-      if (response.status == 200) {
-        localStorage.setItem("token", response.data.token);
-        authorized();
-        window.location.href = "/app";
-      }
-    }).catch((err) => {
-      console.log(err.response.data.message);
-      toast.warn(err.response.data.message, {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
+    })
+      .then((response: any) => {
+        console.log(response);
+        if (response.status == 200) {
+          localStorage.setItem("token", response.data.token);
+          authorized();
+          window.location.href = "/app";
+        }
+      })
+      .catch((err) => {
+        console.log(err.response.data.message);
+        toast.warn(err.response.data.message, {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
         });
-        
-
-    });
-    
+      });
   };
   useEffect(() => {
     authorized();
-    if(localStorage.getItem("token")){ //todo podla toho ci je authorized
+    if (localStorage.getItem("token")) {
+      //todo podla toho ci je authorized
       window.location.href = "/app";
     }
-  });
+  }, []);
 
-  const authorized = () => {
-    Axios.get("http://localhost:3000/auth", {
-      headers: { "x-access-token": localStorage.getItem("token") },
-      
-    }).then((response: any) => {
-      console.log(response);
-    });
+  const authorized = async () => {
+    try {
+      const response = await Axios.get("http://localhost:3000/auth", {
+        // vrati promise najskor preto await
+        headers: { "x-access-token": localStorage.getItem("token") },
+      });
+    } catch (error) {
+      console.warn(error);
+    }
   };
 
   const form = useForm({
@@ -108,17 +108,17 @@ function Login() {
         </form>
       </div>
       <ToastContainer
-          position="top-right"
-          autoClose={3000}
-          hideProgressBar
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-          theme="light"
-  	  />
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
     </div>
   );
 }
