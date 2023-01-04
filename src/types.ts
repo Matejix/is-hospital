@@ -23,7 +23,6 @@ export interface TableSortProps {
   data: PatientsData[];
 }
 
-
 export interface BasicInfo {
   ROD_CISLO: string;
   TITUL: string;
@@ -36,7 +35,7 @@ export interface BasicInfo {
   DATUM_NARODENIA: Date;
   DATUM_UMRTIA: Date;
   KRVNA_SKUPINA: string;
-  ZAMESTNANIE: string; 
+  ZAMESTNANIE: string;
   POISTOVNA: string;
 }
 
@@ -59,10 +58,13 @@ export interface Requests {
   NAZOV_DIAGNOZY: string;
   VYSTAVIL: string;
   ODDELENIE: string;
-}  
+}
 
 export interface Prescriptions {
-  KOD: string;
-  VYSTAVIL: string;
-  LIEK: string;
-}  
+  PREDPISY: {
+    kod: Number;
+    vystavil: string;
+    liek: string[];
+    popis: string;
+  };
+}
