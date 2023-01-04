@@ -29,6 +29,9 @@
 
 .RecordsPanel {
     max-height: 400px;
+}
 
-
+.FullSize {
+    min-width: 100vh;
+    min-height: 100vh;
 }

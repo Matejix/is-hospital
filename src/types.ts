@@ -66,3 +66,9 @@ export interface Prescriptions {
   VYSTAVIL: string;
   LIEK: string;
 }  
+
+export interface ScheduleDate {
+  ID_TYPU_ODDELENIA: number;
+  DAT_OD: Date;
+  DAT_DO: Date;
+}

@@ -4,6 +4,7 @@ import {
   Select,
   Textarea,
   TextInput,
+  LoadingOverlay
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import useTokenData from "@/hooks/useTokenData";
@@ -15,13 +16,16 @@ import { MedicineData, PatientsData } from "@/types";
 function Recipe() {
   const [patients, setPatients] = useState<PatientsData[]>([]);
   const [medicines, setMedicines] = useState<MedicineData[]>([]);
+  const [loading, setLoading] = useState(false);
 
   const getUsers = () => {
+    setLoading(true);
     axios
       .get("http://localhost:3000/recipe/getPatients")
       .then((response: any) => {
         console.log(response);
         setPatients(response.data);
+        setLoading(false);
       });
   };
 
@@ -76,16 +80,20 @@ function Recipe() {
   }, []);
 
   return (
-    <div className="mt-10 m-auto w-2/3">
+    <div className="mt-10 m-auto w-2/3" >
+
       <h1 className="mb-10 text-4xl font-bold text-center tracking-widest opacity-0 -translate-y-16 translate duration-300">
         Predpis lieku
         <div className="mt-2 m-auto max-w-xs h-1 bg-gradient-to-r from-cyan-400 to-blue-500"></div>
+
       </h1>
       <form
         className="flex flex-col w-3/4 m-auto pl-6 pr-6 pt-14 pb-14 bg-white shadow-xl border-2 border-slate-100 opacity-0 translate-y-16 translate duration-300"
         onSubmit={form.onSubmit(form.reset)}
         onReset={form.onReset}
       >
+        <LoadingOverlay visible={loading} overlayBlur={2} />
+
         <div className="flex justify-between mb-8">
           <TextInput
             className="basis-1/6"

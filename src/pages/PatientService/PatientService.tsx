@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 import "../../styles.css";
-
 import useTokenData from "@/hooks/useTokenData";
-
 import {BasicInfo, Prescriptions, Records, Requests} from "@/types"
 import {
   createStyles,
