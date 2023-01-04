@@ -22,3 +22,47 @@ export interface PatientsData {
 export interface TableSortProps {
   data: PatientsData[];
 }
+
+
+export interface BasicInfo {
+  ROD_CISLO: string;
+  TITUL: string;
+  MENO: string;
+  PRIEZVISKO: string;
+  RODNE_PRIEZVISKO: string;
+  ULICA: string;
+  PSC: string;
+  NAZOV_MESTA: string;
+  DATUM_NARODENIA: Date;
+  DATUM_UMRTIA: Date;
+  KRVNA_SKUPINA: string;
+  ZAMESTNANIE: string; 
+  POISTOVNA: string;
+}
+
+export interface Records {
+  ID_ZAZNAM: string;
+  DATUM_ZAZNAMU: Date;
+  ZAZNAM: string;
+  TYP: string;
+  POPIS: string;
+  DAVKOVANIE_MEDIKACIE: string;
+  NAZOV_DIAGNOZY: string;
+  VYSTAVIL: string;
+  ODDELENIE: string;
+}
+
+export interface Requests {
+  ID_ZIADANKY: string;
+  DAT_VYSTAVENIA: Date;
+  POPIS: string;
+  NAZOV_DIAGNOZY: string;
+  VYSTAVIL: string;
+  ODDELENIE: string;
+}  
+
+export interface Prescriptions {
+  KOD: string;
+  VYSTAVIL: string;
+  LIEK: string;
+}  
