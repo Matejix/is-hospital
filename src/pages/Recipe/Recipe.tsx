@@ -12,8 +12,10 @@ import { DatePicker } from "@mantine/dates";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { MedicineData, PatientsData } from "@/types";
+import { useLocation } from "react-router";
 
 function Recipe() {
+  const route = useLocation();
   const [patients, setPatients] = useState<PatientsData[]>([]);
   const [medicines, setMedicines] = useState<MedicineData[]>([]);
   const [loading, setLoading] = useState(false);
@@ -23,9 +25,11 @@ function Recipe() {
     axios
       .get("http://localhost:3000/recipe/getPatients")
       .then((response: any) => {
-        console.log(response);
+        //console.log(response);
         setPatients(response.data);
         setLoading(false);
+        //console.log(route.search?.slice(1));
+        form.values.id_patient = route.search.slice(1);
       });
   };
 
@@ -33,7 +37,7 @@ function Recipe() {
     axios
       .get("http://localhost:3000/recipe/getMedicine")
       .then((response: any) => {
-        console.log(response);
+        //console.log(response);
         setMedicines(response.data);
       });
   };
@@ -64,7 +68,7 @@ function Recipe() {
       medicine: (value) => (!value.length ? "Zvoľte nejaky liek" : null),
     },
   });
-  console.log(form);
+  //console.log(form);
   useEffect(() => getUsers(), []);
   useEffect(() => getMedicine(), []);
 
@@ -147,10 +151,11 @@ function Recipe() {
         <Textarea
           className="mb-8"
           label="Popis"
-          description="Popis uživania liekov"
+          description="Popis uživania lieku"
           radius="md"
           {...form.getInputProps("description")}
         />
+
         <Button
           onClick={sendRecipe}
           className="w-1/4 m-auto text-xl bg-blue-400 hover:-translate-y-1 hover:shadow-md transition-all duration-300 "
