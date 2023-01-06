@@ -68,3 +68,9 @@ export interface Prescriptions {
     popis: string;
   };
 }
+
+export interface ScheduleDate{
+  ODDELENIE: string,
+  DAT_OD: Date;
+  DAT_DO: Date;
+}

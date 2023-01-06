@@ -10,13 +10,30 @@ patientServiceRouter.post("/getSchedule", async (req: Request, res: Response) =>
   const connection = await getDBConnection();
  
   const query = await connection?.execute(
-     `select id_typu_oddelenia, dat_od, dat_do from is_dochadzka where ID_ZAMESTNANEC = ${id}`
+     `select x.informacie_oddelenia.nazov_oddelenia as oddelenie,  dat_od, dat_do from is_dochadzka 
+     join is_typ_oddelenia x using (id_typu_oddelenia)
+     where ID_ZAMESTNANEC = ${id} and dat_od <= sysdate`
   );
   if(query?.rows != undefined){
   var rows = JSON.parse(JSON.stringify(query?.rows)); 
   res.json(rows);
   }
   });
+
+  patientServiceRouter.post("/getFutureSchedule", async (req: Request, res: Response) => {
+   const {id} = req.body;
+   const connection = await getDBConnection();
+  
+   const query = await connection?.execute(
+      `select x.informacie_oddelenia.nazov_oddelenia as oddelenie,  dat_od, dat_do from is_dochadzka 
+      join is_typ_oddelenia x using (id_typu_oddelenia)
+      where ID_ZAMESTNANEC = ${id} and dat_od > sysdate`
+   );
+   if(query?.rows != undefined){
+   var rows = JSON.parse(JSON.stringify(query?.rows)); 
+   res.json(rows);
+   }
+   });
 
   patientServiceRouter.post("/postDate", async (req: Request, res: Response) => {
     const {startDate, endDate, id} = req.body;

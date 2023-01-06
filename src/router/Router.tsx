@@ -32,6 +32,7 @@ import Menu from "@/components/Menu";
 import Footer from "@/components/Footer";
 import Login from "@/components/Login";
 import Bubble from "@/components/CornerBubbles";
+import ScheduleAdministration from "@/pages/ScheduleAdministration";
 
 const router = createBrowserRouter([
   {
@@ -77,6 +78,10 @@ const router = createBrowserRouter([
       {
         path: "schedule",
         element: <Schedule />,
+      },
+      {
+        path: "scheduleAdministration",
+        element: <ScheduleAdministration />,
       },
       {
         path: "hospitalization",
