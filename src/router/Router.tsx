@@ -29,7 +29,6 @@ import Report12 from "@/pages/Reports/Report12";
 
 // Components
 import Menu from "@/components/Menu";
-import Footer from "@/components/Footer";
 import Login from "@/components/Login";
 import Bubble from "@/components/CornerBubbles";
 
@@ -90,31 +89,31 @@ const router = createBrowserRouter([
         path: "profile",
         element: <Profile />,
       },
-      {
-        path: "reports",
-        element: (
-          <>
-            <div className="flex">
-              <Reports />
-              <Outlet />
-            </div>
-          </>
-        ),
-        children: [
-          { path: "report-1", element: <Report1 /> },
-          { path: "report-2", element: <Report2 /> },
-          { path: "report-3", element: <Report3 /> },
-          { path: "report-4", element: <Report4 /> },
-          { path: "report-5", element: <Report5 /> },
-          { path: "report-6", element: <Report6 /> },
-          { path: "report-7", element: <Report7 /> },
-          { path: "report-8", element: <Report8 /> },
-          { path: "report-9", element: <Report9 /> },
-          { path: "report-10", element: <Report10 /> },
-          { path: "report-11", element: <Report11 /> },
-          { path: "report-12", element: <Report12 /> },
-        ],
-      },
+      // {
+      //   path: "reports",
+      //   element: (
+      //     <>
+      //       <div className="flex">
+      //         <Reports />
+      //         <Outlet />
+      //       </div>
+      //     </>
+      //   ),
+      //   children: [
+      //     { path: "report-1", element: <Report1 /> },
+      //     { path: "report-2", element: <Report2 /> },
+      //     { path: "report-3", element: <Report3 /> },
+      //     { path: "report-4", element: <Report4 /> },
+      //     { path: "report-5", element: <Report5 /> },
+      //     { path: "report-6", element: <Report6 /> },
+      //     { path: "report-7", element: <Report7 /> },
+      //     { path: "report-8", element: <Report8 /> },
+      //     { path: "report-9", element: <Report9 /> },
+      //     { path: "report-10", element: <Report10 /> },
+      //     { path: "report-11", element: <Report11 /> },
+      //     { path: "report-12", element: <Report12 /> },
+      //   ],
+      // },
       {
         path: "data-model",
         element: <DataModel />,

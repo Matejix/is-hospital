@@ -68,3 +68,12 @@ export interface Prescriptions {
     popis: string;
   };
 }
+
+export interface ProfileInfo {
+  FOTOGRAFIA: Buffer;
+  CELE_MENO: string;
+  TITUL: string;
+  TEL: string;
+  EMAIL: string;
+  NAZOV: string;
+}

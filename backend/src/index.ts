@@ -21,6 +21,7 @@ import report9 from "./reports/report9";
 
 import patientServiceRouter from "./controllers/patientServiceController";
 import recipeRouter from "./controllers/recipeController";
+import profileRouter from "./controllers/profileController";
 
 dotenv.config({ path: "../.env" });
 
@@ -64,6 +65,7 @@ app.use("/report-11", report11);
 app.use("/report-12", report12);
 app.use("/patientservice", patientServiceRouter);
 app.use("/recipe", recipeRouter);
+app.use("/profile", profileRouter);
 
 app.listen(port, () => {
   console.log(`Server listening at http://localhost:${port}`);

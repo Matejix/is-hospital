@@ -58,7 +58,10 @@ function NavbarLink({ icon: Icon, label, active, onClick }: NavbarLinkProps) {
   );
 }
 
-const mockdata = [{ icon: IconHome2, label: "Domov", linkTo: "/app" }];
+const mockdata = [
+  { icon: IconHome2, label: "Domov", linkTo: "/app" },
+  { icon: IconUser, label: "Profil", linkTo: "/app/profile" },
+];
 
 export function Menu() {
   const { pathname } = useLocation();
