@@ -3,9 +3,9 @@ import express, { Request, Response } from "express";
 
 
 
-const patientServiceRouter = express.Router();
+const scheduleService = express.Router();
 
-patientServiceRouter.post("/getSchedule", async (req: Request, res: Response) => {
+scheduleService.post("/getSchedule", async (req: Request, res: Response) => {
   const {id} = req.body;
   const connection = await getDBConnection();
  
@@ -20,7 +20,7 @@ patientServiceRouter.post("/getSchedule", async (req: Request, res: Response) =>
   }
   });
 
-  patientServiceRouter.post("/getFutureSchedule", async (req: Request, res: Response) => {
+  scheduleService.post("/getFutureSchedule", async (req: Request, res: Response) => {
    const {id} = req.body;
    const connection = await getDBConnection();
   
@@ -35,7 +35,7 @@ patientServiceRouter.post("/getSchedule", async (req: Request, res: Response) =>
    }
    });
 
-  patientServiceRouter.post("/postDate", async (req: Request, res: Response) => {
+  scheduleService.post("/postDate", async (req: Request, res: Response) => {
     const {startDate, endDate, id} = req.body;
     const connection = await getDBConnection();
     console.log(startDate);
@@ -56,4 +56,4 @@ patientServiceRouter.post("/getSchedule", async (req: Request, res: Response) =>
     });
 
 
-export default patientServiceRouter;
+export default scheduleService;

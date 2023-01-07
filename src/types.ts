@@ -74,3 +74,26 @@ export interface ScheduleDate{
   DAT_OD: Date;
   DAT_DO: Date;
 }
+
+export interface ScheduleEmployeeDate{
+  ID_DOCHADZKY: number;
+  ID_ZAMESTNANEC: number;
+  CELE_MENO: string;
+  ODDELENIE: string,
+  DAT_OD: Date;
+  DAT_DO: Date;
+}
+
+export interface EmployeeNames{
+  ID_ZAMESTNANEC: number;
+  CELE_MENO: string;
+}
+
+export interface ProfileInfo {
+  FOTOGRAFIA: Buffer;
+  CELE_MENO: string;
+  TITUL: string;
+  TEL: string;
+  EMAIL: string;
+  NAZOV: string;
+}
