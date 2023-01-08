@@ -48,7 +48,7 @@ const ReusableChart = ({ labels, datasets }: Props) => {
     labels,
     datasets,
   };
-  return <Bar options={options} data={data} />;
+  return <Bar className="bg-slate-50" options={options} data={data} />;
 };
 
 export default ReusableChart;

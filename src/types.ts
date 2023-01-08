@@ -2,6 +2,7 @@ export type LogUser = {
   password: string;
   id_employee: number;
   username: string;
+  role: string;
   exp: number;
   iat: number;
 };
