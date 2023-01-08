@@ -1,14 +1,14 @@
 import "../../styles.css";
 import { useEffect, useState } from "react";
 import { Calendar, TimeInput, DatePicker } from '@mantine/dates';
-import { useMantineTheme, Button, Indicator, Select } from '@mantine/core';
-import { IconClock } from '@tabler/icons';
+import { useMantineTheme, Button, Indicator, Select,  createStyles, Table, ScrollArea} from '@mantine/core';
+import { IconClock, IconSettings, IconX } from '@tabler/icons';
 import useTokenData from "@/hooks/useTokenData";
 import axios from "axios";
-import {ScheduleEmployeeDate, EmployeeNames} from "@/types"
+import {ScheduleEmployeeDate, EmployeeNames, Dates} from "@/types"
 import 'dayjs/locale/sk';
 import { useForm } from '@mantine/form';
-import { createStyles, Table, ScrollArea } from '@mantine/core';
+import { ActionIcon } from '@mantine/core';
 
 const useStyles = createStyles((theme) => ({
   header: {
@@ -37,9 +37,9 @@ const useStyles = createStyles((theme) => ({
  
 function ScheduleAdministration() {
   const [value, setValue] = useState<Date | null>(new Date());
-  const [scheduleEmployeeDates, setScheduleEmployeeDates] = useState<ScheduleEmployeeDate[] | null>(null);
-  const [scheduleOnDate, setScheduleOnDate] = useState<ScheduleEmployeeDate[]>([]);
   const [employees, setEmployees] = useState<EmployeeNames[]>([]);
+  const [scheduleEmployeeDates, setScheduleEmployeeDates] = useState<Dates[] | null>(null);
+  const [scheduleOnDate, setScheduleOnDate] = useState<ScheduleEmployeeDate[]>([]);
   const [notScheduledEmployees, setNotScheduledEmployees] = useState<EmployeeNames[]>([]);
   const [scrolled, setScrolled] = useState(false);
 
@@ -47,27 +47,20 @@ function ScheduleAdministration() {
   useEffect(() => {
     getSchedule();
     getEmployees();
-    scheduleDate();
+    getScheduleOnDate();
+    notScheduledEmp();
   }, []);
 
   const { classes, cx } = useStyles();
 
-
   useEffect(() => {
-    scheduleDate();
+      getScheduleOnDate();
+      notScheduledEmp();
   }, [value]);
 
   useEffect(() => {
-    scheduleDate();
-  }, [employees]);
-
-  useEffect(() => {
-    if(notScheduledEmployees == null || notScheduledEmployees.length == 0)
-      scheduleDate();
-  }, [notScheduledEmployees]);
-
-
- 
+    notScheduledEmp();
+  }, [scheduleOnDate]);
 
   const theme = useMantineTheme();
   const employeeData = useTokenData();
@@ -78,41 +71,32 @@ function ScheduleAdministration() {
     });
   };
 
+  const getScheduleOnDate = () => {
+    if(value){
+      axios.post("http://localhost:3000/scheduleAdministration/getScheduleOnDate", {
+        year: value?.getFullYear(),
+        month: (value.getMonth() + 1),
+        day: value.getDate()
+      }).then((response: any) => {
+        setScheduleOnDate(response.data);
+        notScheduledEmp();
+      });
+    }
+  };
+
   const getEmployees = () => {
     axios.get("http://localhost:3000/scheduleAdministration/getEmployees").then((response: any) => {
       setEmployees(response.data);
     });
   };
 
-  const scheduleDate = () => {
-    console.log("here");
-    var schedulesOnDate : ScheduleEmployeeDate[] = [];
-    setScheduleOnDate([]);
+  const notScheduledEmp = () => {
 
-
-    var num2 = 0;
-    if(value && scheduleEmployeeDates)
+    if(value && scheduleOnDate)
     {
-      console.log("here1");
-      console.log(scheduleEmployeeDates);
-
       var employeesNotOnDate = [...employees];
-
-      for (let i = 0; i < scheduleEmployeeDates.length; i++) {
-        var row = scheduleEmployeeDates[i];
-          if( (new Date(row.DAT_OD).getDate() == value.getDate()) &&
-          (new Date(row.DAT_OD).getMonth() == value.getMonth()) &&
-          (new Date(row.DAT_OD).getFullYear() == value.getFullYear()))
-        {
-          schedulesOnDate[num2] = row;
-          num2++;
-        } 
-      }
-      setScheduleOnDate(schedulesOnDate);
-      console.log(schedulesOnDate);
-
-        for (let i = 0; i < schedulesOnDate.length; i++) {
-          var row = schedulesOnDate[i];
+        for (let i = 0; i < scheduleOnDate.length; i++) {
+          var row = scheduleOnDate[i];
           for (let j = 0; j < employeesNotOnDate.length; j++) {
             if(row.ID_ZAMESTNANEC == employeesNotOnDate[j].ID_ZAMESTNANEC)
             {
@@ -124,21 +108,31 @@ function ScheduleAdministration() {
         setNotScheduledEmployees(employeesNotOnDate);
     }
   };
-
+  const deleteSchedule = (row : ScheduleEmployeeDate) => {
+    axios.post("http://localhost:3000/scheduleAdministration/deleteSchedule", {
+        id: row.ID_DOCHADZKY
+      }).then((response: any) => {
+        getSchedule();
+        getScheduleOnDate()
+        notScheduledEmp();
+      });
+  };
 
   const foundDate = (date : Date) => {
     var found = false;
-    scheduleEmployeeDates?.map((row: ScheduleEmployeeDate) => (
-      (new Date(row.DAT_OD).getDate() == date.getDate()) &&
-      (new Date(row.DAT_OD).getMonth() == date.getMonth()) &&
-      (new Date(row.DAT_OD).getFullYear() == date.getFullYear())
+    scheduleEmployeeDates?.map((row: Dates) => (
+      (new Date(row.DAT).getDate() == date.getDate()) &&
+      (new Date(row.DAT).getMonth() == date.getMonth()) &&
+      (new Date(row.DAT).getFullYear() == date.getFullYear())
       ? found = true        : null
     ));
     return found;
   };
-  const sendForm = () => {
-    var startDate = new Date(form.values.date);
-    var endDate = new Date(form.values.date);
+  const sendForm = () => 
+  {
+    if(value){
+    var startDate = new Date(value);
+    var endDate = new Date(value);
     startDate.setHours(form.values.start.getHours());
     startDate.setMinutes(form.values.start.getMinutes());
 
@@ -160,8 +154,10 @@ function ScheduleAdministration() {
       id: form.values.id_zamestnanec
     }).then((response: any) => {
         getSchedule();
-        var length = scheduleOnDate.length;
-    });
+        getScheduleOnDate();
+        notScheduledEmp();
+        form.reset();
+    });}
   };
 
   const form = useForm({
@@ -175,10 +171,14 @@ function ScheduleAdministration() {
 
   const rows = scheduleOnDate.map((row) => (
     <tr key={row.ID_DOCHADZKY}>
+      <td>{row.ID_ZAMESTNANEC}</td>
+
       <td>{row.CELE_MENO}</td>
       <td>{new Date(row.DAT_OD).getHours() > 10 ? (new Date(row.DAT_OD).toLocaleTimeString()).toString().substring(0,5) : (new Date(row.DAT_OD).toLocaleTimeString()).toString().substring(0,4)}</td>
       <td>{new Date(row.DAT_DO).getHours() > 10 ? (new Date(row.DAT_DO).toLocaleTimeString()).toString().substring(0,5) : (new Date(row.DAT_DO).toLocaleTimeString()).toString().substring(0,4)}</td>
       <td>{row.ODDELENIE ? row.ODDELENIE : ""}</td>
+      <td  onClick={() => deleteSchedule(row)}>  <ActionIcon variant="subtle"><IconX size={16} /></ActionIcon></td>
+      
 
     </tr>
   ));
@@ -229,14 +229,16 @@ function ScheduleAdministration() {
         <div className="p-2 border-b-2 mb-2">
           <div className="px-10">
            <h1 className="font-bold	text-center text-lg	text-sky-800"> Zoznam služieb pre deň  {value?.toLocaleDateString()}</h1>
-           <ScrollArea sx={{ height: 220 }} onScrollPositionChange={({ y }) => setScrolled(y !== 0)}>
+           <ScrollArea sx={{ height: 250 }} onScrollPositionChange={({ y }) => setScrolled(y !== 0)}>
             <Table sx={{ minWidth: 150 }}>
               <thead className={cx(classes.header, { [classes.scrolled]: scrolled })}>
                 <tr>
+                <th>Id</th>
                   <th>Meno</th>
                   <th>Od</th>
                   <th>Do</th>
                   <th>Oddelenie</th>
+                  <th>Zrušiť</th>
                 </tr>
               </thead>
               <tbody>{rows}</tbody>
@@ -288,7 +290,7 @@ function ScheduleAdministration() {
 
        />
 
-        <DatePicker
+        {/* <DatePicker
             className="basis-1/4"
             withAsterisk
             radius="lg"
@@ -297,7 +299,7 @@ function ScheduleAdministration() {
             locale="sk"
             {...form.getInputProps("date")}            
 
-          />
+          /> */}
           <div className="flex items-center justify-center h-screen h-12 m-2">
               <Button variant="outline" radius="lg" size="md" onClick={sendForm}>
                     Odoslať

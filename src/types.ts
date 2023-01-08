@@ -85,6 +85,10 @@ export interface ScheduleEmployeeDate{
   DAT_DO: Date;
 }
 
+export interface Dates{
+  DAT: Date;
+}
+
 export interface EmployeeNames{
   ID_ZAMESTNANEC: number;
   CELE_MENO: string;

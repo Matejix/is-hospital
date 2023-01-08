@@ -21,7 +21,7 @@ function useAdministratorCardItems() {
         icon: (
           <CalendarDaysIcon className="w-24 h-24 text-slate-700 group-hover:text-slate-50 transition duration-500" />
         ),
-        link: "schedule",
+        link: "scheduleAdministration",
       },
 
       {
