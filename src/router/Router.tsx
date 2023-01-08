@@ -6,6 +6,7 @@ import Home from "@/pages/Home";
 import Recipe from "@/pages/Recipe";
 import Register from "@/components/Register/Register";
 import PatientService from "@/pages/PatientService";
+import EmployeeService from "@/pages/EmployeeService";
 import Schedule from "@/pages/Schedule";
 import Hospitalization from "@/pages/Hospitalization";
 import Requester from "@/pages/Requester";
@@ -86,34 +87,38 @@ const router = createBrowserRouter([
         element: <Requester />,
       },
       {
+        path: "employee-service",
+        element: <EmployeeService />,
+      },
+      {
         path: "profile",
         element: <Profile />,
       },
-      // {
-      //   path: "reports",
-      //   element: (
-      //     <>
-      //       <div className="flex">
-      //         <Reports />
-      //         <Outlet />
-      //       </div>
-      //     </>
-      //   ),
-      //   children: [
-      //     { path: "report-1", element: <Report1 /> },
-      //     { path: "report-2", element: <Report2 /> },
-      //     { path: "report-3", element: <Report3 /> },
-      //     { path: "report-4", element: <Report4 /> },
-      //     { path: "report-5", element: <Report5 /> },
-      //     { path: "report-6", element: <Report6 /> },
-      //     { path: "report-7", element: <Report7 /> },
-      //     { path: "report-8", element: <Report8 /> },
-      //     { path: "report-9", element: <Report9 /> },
-      //     { path: "report-10", element: <Report10 /> },
-      //     { path: "report-11", element: <Report11 /> },
-      //     { path: "report-12", element: <Report12 /> },
-      //   ],
-      // },
+      {
+        path: "reports",
+        element: (
+          <>
+            <div className="flex">
+              <Reports />
+              <Outlet />
+            </div>
+          </>
+        ),
+        children: [
+          { path: "report-1", element: <Report1 /> },
+          { path: "report-2", element: <Report2 /> },
+          { path: "report-3", element: <Report3 /> },
+          { path: "report-4", element: <Report4 /> },
+          { path: "report-5", element: <Report5 /> },
+          { path: "report-6", element: <Report6 /> },
+          { path: "report-7", element: <Report7 /> },
+          { path: "report-8", element: <Report8 /> },
+          { path: "report-9", element: <Report9 /> },
+          { path: "report-10", element: <Report10 /> },
+          { path: "report-11", element: <Report11 /> },
+          { path: "report-12", element: <Report12 /> },
+        ],
+      },
       {
         path: "data-model",
         element: <DataModel />,
