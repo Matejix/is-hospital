@@ -19,7 +19,7 @@ function ReusableTable<T>({ data, tableHeaders, tableRow }: Props<T>) {
   const rows = data.map((element) => tableRow(element));
 
   return (
-    <Table className="m-auto max-w-full opacity-0 translate-y-16 transition duration-300">
+    <Table className="m-auto max-w-full opacity-0 translate-y-16 transition duration-300 bg-slate-50">
       <thead className=" bg-blue-400">
         <tr>
           {tableHeaders.map((header) => (
