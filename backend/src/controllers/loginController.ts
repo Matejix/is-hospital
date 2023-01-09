@@ -14,33 +14,35 @@ loginRouter.post("/", async (req: Request, res: Response) => {
     `select * from is_zamestnanec_login WHERE login = '${username}'`
   );
 
-  if (queryEmployeeRegistered?.rows?.length == 1) {
-    //if id of employee exist
-
-    var obj = JSON.parse(JSON.stringify(queryEmployeeRegistered?.rows));
-    var passwordFromDb = obj[0].HESLO;
-    bcrypt.compare(password, passwordFromDb).then(async (match) => {
-      if (!match) {
-        res.status(400).json({ message: "Login unsuccessful!" });
-      } else {
-        var employeeType = await getRole(username);
-        const token = jwt.sign(
-          {
-            username: username,
-            role: employeeType,
-            id_employee: obj[0].ID_ZAMESTNANEC,
-          },
-          "TODOOOSecret",
-          {
-            expiresIn: 300,
-          }
-        );
-
-        console.log("User " + username + " logged in");
-        res.json({ auth: true, token: token, result: username });
-      }
-    });
+  if (queryEmployeeRegistered?.rows?.length == 0) {
+    return res.status(400).json({ message: "User does not exist!" });
   }
+
+  //if id of employee exist
+
+  var obj = JSON.parse(JSON.stringify(queryEmployeeRegistered?.rows));
+  var passwordFromDb = obj[0].HESLO;
+  const match = await bcrypt.compare(password, passwordFromDb);
+
+  if (!match) {
+    return res.status(400).json({ message: "Bad password!" });
+  }
+
+  var employeeType = await getRole(username);
+  const token = jwt.sign(
+    {
+      username: username,
+      role: employeeType,
+      id_employee: obj[0].ID_ZAMESTNANEC,
+    },
+    "TODOOOSecret",
+    {
+      expiresIn: 300,
+    }
+  );
+
+  console.log("User " + username + " logged in");
+  return res.json({ auth: true, token: token, result: username });
 });
 
 async function getRole(username: number) {

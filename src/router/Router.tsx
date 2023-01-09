@@ -32,6 +32,7 @@ import Report12 from "@/pages/Reports/Report12";
 import Menu from "@/components/Menu";
 import Login from "@/components/Login";
 import Bubble from "@/components/CornerBubbles";
+import AuthGate from "./AuthGate";
 
 const router = createBrowserRouter([
   {
@@ -53,13 +54,13 @@ const router = createBrowserRouter([
   {
     path: "/app",
     element: (
-      <>
+      <AuthGate>
         <Menu />
         <div className="pl-24">
           <Outlet />
           <Bubble />
         </div>
-      </>
+      </AuthGate>
     ),
     children: [
       {
