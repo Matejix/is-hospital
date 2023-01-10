@@ -2,6 +2,18 @@
 @tailwind components;
 @tailwind utilities;
 
-.TableBlock {
-    
+.animated-gradient {
+  /* hover:bg-gradient-to-b from-blue-500 to-blue-400 */
+  background-image: linear-gradient(
+    to left,
+    theme("colors.white") 33%,
+    theme("colors.blue.500") 33%,
+    theme("colors.blue.400") 66%,
+    theme("colors.white") 66%
+  );
+  background-size: 400% 400%;
+  background-position: 100%;
+  &:hover {
+    background-position: 50%;
+  }
 }
