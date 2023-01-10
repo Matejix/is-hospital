@@ -145,7 +145,7 @@ function PatientService() {
   const { classes } = useStyles();
 
   useEffect(() => {
-    getPatients();
+    //getPatients();
     getConstantValues();
   }, []);
   const [patients, setPatients] = useState<RowData[] | null>(null);
@@ -196,6 +196,7 @@ function PatientService() {
       .get("http://localhost:3000/patientservice/getInsurances")
       .then((response: any) => {
         insurances = response.data;
+        console.log(insurances);
       });
   };
 
@@ -321,6 +322,7 @@ function PatientService() {
       insurance: "",
       insuranceStart: new Date(),
       insuranceEnd: new Date(),
+      title: ""
     },
     validate: {
       name: (value) => (value.length === 0 ? "Zvoľte meno" : null),
@@ -333,6 +335,7 @@ function PatientService() {
       birthdate: (value) => (value === null ? "Zvoľte dátum narodenia" : null),
       insuranceStart: (value) => (value === null ? "Zvoľte dátum začiatku poistenia" : null),
       birthsurname: (value) => (new Date(value) > new Date() ? "Zvoľte správny dátum úmrtia" : null),
+    
     },
   });
 
@@ -368,10 +371,30 @@ function PatientService() {
       insurance: form.values.insurance,
       insuranceStart: insurancestartdate,
       insuranceEnd: insuranceenddate,
+      title: form.values.title,
     }).then((response: any) => {
       // form.reset();
       console.log("");
     });
+  };
+
+  const birthday = () => {
+    var id = form.values.id;
+    if(id.length == 11
+      ){
+      var year = form.values.id.substring(0,2); 
+      var month = parseInt(form.values.id.substring(2,4)) % 50; 
+      var day = form.values.id.substring(4,6); 
+      if(parseInt(year,10) > 23){
+        year = "19" + year;
+      } else {
+        year = "20" + year;
+      }
+    var birthday = month + "." + day + "." + year;
+    console.log(birthday);
+
+    form.values.birthdate = new Date(birthday);
+  }
   };
 
   const rows = sortedData?.map((row: any) => (
@@ -498,9 +521,17 @@ function PatientService() {
             size='lg'
           >
             {
-              <div>
+              <div className="">
+                <div className="border-b border-gray-500 mb-2">
                 <h1 className="font-bold	text-center text-lg	text-sky-800 mb-5		"> Pridať pacienta </h1>
+                </div>
                 <div className="flex justify-between mb-2 space-x-3 ">
+                <TextInput
+                    className="basis-1/6"
+                    radius="lg"
+                    label="Titul"
+                    {...form.getInputProps("title")}
+                  />
                   <TextInput
                     withAsterisk
                     radius="lg"
@@ -523,7 +554,8 @@ function PatientService() {
                   <TextInput
                     withAsterisk
                     radius="lg"
-                    label="Rodné číslo"
+                    label="Rodné číslo s lomkou"
+                    on={birthday()}
                     {...form.getInputProps("id")}
                   />
 
@@ -597,14 +629,14 @@ function PatientService() {
 
                 <div className="flex justify-between  space-x-3 pb-3 border-b border-gray-200 ">
                   <Select
+                    className="basis-1/2"
                     withAsterisk
                     radius="lg"
                     label="Poisťovňa"
                     {...form.getInputProps("insurance")}
                     data={insurances.map((insurance) => ({
-                      value: insurance.ID_POISTOVNE,
-                      label:
-                        insurance.NAZOV,
+                      value: insurance.ID_POISTOVNA,
+                      label: insurance.NAZOV 
                     }))}
                   />
 

@@ -99,7 +99,7 @@ export interface BloodTypes{
 }
 
 export interface Insurance{
-  ID_POISTOVNE: number;
+  ID_POISTOVNA: number;
   NAZOV: string;
 }
 

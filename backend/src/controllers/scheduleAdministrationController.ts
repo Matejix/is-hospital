@@ -76,9 +76,6 @@ const scheduleAdministrationService = express.Router();
    scheduleAdministrationService.post("/postSchedule", async (req: Request, res: Response) => {
     const {startDate, endDate, id} = req.body;
     const connection = await getDBConnection();
-    console.log(startDate);
-    console.log(endDate);
-    console.log(id)
 
     const queryID = await connection?.execute(
       `select max(id_dochadzky) as id from is_dochadzka`

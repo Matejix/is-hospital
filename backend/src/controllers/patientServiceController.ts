@@ -42,13 +42,13 @@ patientServiceRouter.post(
 );
 
 patientServiceRouter.post("/deletePatient", async (req: Request, res: Response) => {
-  const {id} = req.body;
+  const { id } = req.body;
   console.log(id);
   const connection = await getDBConnection();
   const query1 = await connection?.execute(
     `delete from is_vykon where id_zaznam in (select id_zaznam from is_zaznamy where rod_cislo = '${id}')`
   );
- await connection?.commit();
+  await connection?.commit();
   const query2 = await connection?.execute(
     `delete from is_zdravotna_karta where rod_cislo = '${id}'`
   );
@@ -74,29 +74,88 @@ patientServiceRouter.post("/deletePatient", async (req: Request, res: Response) 
   );
   await connection?.commit();
   const query = await connection?.execute(
-     `delete from is_pacient where rod_cislo = '${id}'`
+    `delete from is_pacient where rod_cislo = '${id}'`
   );
   await connection?.commit().then(() => {
-     res.status(200).json({ message: "Success" });
+    res.status(200).json({ message: "Success" });
   });
 });
 
 patientServiceRouter.post("/addPatient", async (req: Request, res: Response) => {
-  const {  name,surname,birthsurname,id,birthdate,deathdate,bloodtype,employment,street,city ,insurance,insuranceStart,insuranceEnd,} = req.body;
-  console.log("here");
-
+  const { name, surname, birthsurname, id, birthdate, deathdate, bloodtype, employment, street, city, insurance, insuranceStart, insuranceEnd, title } = req.body;
   console.log(req.body);
   const connection = await getDBConnection();
- /* const query1 = await connection?.execute(
-    ``
+  var sex = parseInt(id.toString().substring(2, 4)) > 12 ? 'Z' : 'M';
+  console.log(sex);
+  const queryID = await connection?.execute(
+    `select rod_cislo from is_osoba where rod_cislo = '${id}'`
   );
- await connection?.commit();
-  const query = await connection?.execute(
-     ``
-  );
-  await connection?.commit().then(() => {
-     res.status(200).json({ message: "Success" });
-  });*/
+  const queryInsuranceID = await connection?.execute(
+    `select max(id_poistenia) as id from is_poistenia`
+ );
+ if(queryID?.rows != undefined){
+    const queryPerson = await connection?.execute(
+      `insert into is_osoba (rod_cislo, meno, priezvisko, ulica, psc) values (
+    '${id}','${name}','${surname}','${street}','${city}')`
+    );
+    await connection?.commit();
+    if(title != ''){
+      const query = await connection?.execute(
+        `update is_osoba set titul = '${title}'
+        where rod_cislo = '${id}'`
+      );
+      await connection?.commit();
+    }
+    if(birthsurname != ''){
+      const query = await connection?.execute(
+        `update is_osoba set rodne_priezvisko = '${birthsurname}'
+        where rod_cislo = '${id}'`
+      );
+      await connection?.commit();
+    }
+
+    const queryPatient = await connection?.execute(
+      `insert into is_pacient (rod_cislo, pohlavie,krvna_skupina) values (
+    '${id}','${sex}','${bloodtype}')`
+    );
+    await connection?.commit();
+
+    if(deathdate != ''){
+      const query = await connection?.execute(
+        `update is_pacient set datum_umrtia = to_date('${birthdate}', 'DD.MM.YYYY')
+         where rod_cislo = '${id}'`
+      );
+      await connection?.commit();
+    }
+
+    if(employment != ''){
+      const query = await connection?.execute(
+        `update is_pacient set zamestnanie = '${employment}'
+        where rod_cislo = '${id}'`
+      );
+      await connection?.commit();
+    }
+    var obj = JSON.parse(JSON.stringify(queryInsuranceID?.rows));
+    var insuranceID = obj[0].ID + 1;
+    const queryInsurance = await connection?.execute(
+      `insert into is_poistenia (id_poistenia, rod_cislo, id_poistovna, dat_od) values
+      (${insuranceID}, '${id}',${insurance},to_date('${insuranceStart}', 'DD.MM.YYYY'))`
+    );
+    await connection?.commit();
+    if(insuranceEnd != ''){
+      const query = await connection?.execute(
+        `update is_poistenia set dat_do = to_date('${insuranceEnd}', 'DD.MM.YYYY')
+         where rod_cislo = '${id}'`
+      );
+      await connection?.commit();
+    }
+
+    await connection?.commit().then(() => {
+      res.status(200).json({ message: "Success" });
+    });
+  } else {
+    return res.status(400).json({ message: "Užívateľ s daným rodným číslom už existuje!" });
+  }
 });
 
 patientServiceRouter.get(
