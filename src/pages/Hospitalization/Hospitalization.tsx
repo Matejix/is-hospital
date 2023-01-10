@@ -4,6 +4,7 @@ import {
   Select,
   Textarea,
   TextInput,
+  Tabs
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import useTokenData from "@/hooks/useTokenData";
@@ -22,7 +23,7 @@ function Hospitalization() {
     axios
       .get("http://localhost:3000/hospitalization/getPatients")
       .then((response: any) => {
-        console.log(response);
+        //console.log(response);
         setPatients(response.data);
       });
   };
@@ -49,10 +50,10 @@ function Hospitalization() {
       });
   };*/
 
- // const datas = useTokenData();
+  const datas = useTokenData();
   const form = useForm({
     initialValues: {
-      id_employee: "",//datas.id_employee,
+      id_employee: datas.id_employee,
       id_patient: "",
       date: new Date(),
       department: [],
@@ -82,15 +83,26 @@ function Hospitalization() {
     
     <div className="mt-10 m-auto w-2/3">
       <h1 className="mb-10 text-4xl font-bold text-center tracking-widest opacity-0 -translate-y-16 translate duration-300">
-        Hospitalizácia
+        Záznam
         <div className="mt-2 m-auto max-w-xs h-1 bg-gradient-to-r from-cyan-400 to-blue-500"></div>
       </h1>
-      <form
-        className="flex flex-col w-3/4 m-auto pl-6 pr-6 pt-14 pb-14 bg-white shadow-xl border-2 border-slate-100 opacity-0 translate-y-16 translate duration-300"
+
+      <div>
+              <Tabs defaultValue="Records" className="table-auto font-bold">
+                <Tabs.List className=" bg-white p-0 m-0">
+                  <Tabs.Tab value="Records" className="text-base">Hospitalizácia</Tabs.Tab>
+                  <Tabs.Tab value="Requests" className="text-base">Žiadanky</Tabs.Tab>
+                  <Tabs.Tab value="Prescription" className="text-base">Predpisy</Tabs.Tab>
+                </Tabs.List>
+
+                <Tabs.Panel value="Records" >
+                  <div className="RecordsPanel">
+        <form
+        className="flex flex-col m-auto pl-6 pr-6 pt-14 pb-14 bg-white shadow-xl border-2 border-slate-100 opacity-0 translate-y-16 translate duration-300"
         onSubmit={form.onSubmit(form.reset)}
         onReset={form.onReset}
       >
-        <div className="flex justify-between mb-8">
+        <div className="flex justify-between mb-9">
           <TextInput
             className="basis-1/6"
             withAsterisk
@@ -125,9 +137,9 @@ function Hospitalization() {
           />
         </div>
         <MultiSelect
-          className="mb-8"
-          label="Vyberte liek"
-          placeholder="Zvoľte liek"
+          className="mb-8 pt-4"
+          label="Vyberte oddelenie"
+          placeholder="Zvoľte oddelenie"
           data={departments.map((department) => ({
             value: department.NAZOV,
             label:  department.NAZOV,
@@ -141,9 +153,9 @@ function Hospitalization() {
         />
 
         <Textarea
-          className="mb-16"
+          className="mb-16 pt-4" 
           label="Popis"
-          description="Popis oddelenia"
+          placeholder="Popis oddelenia"
           radius="md"
           {...form.getInputProps("description")}
         />
@@ -155,6 +167,22 @@ function Hospitalization() {
           Odoslať
         </Button>
       </form>
+                  </div>
+                </Tabs.Panel>
+
+                <Tabs.Panel value="Requests" pt="xs">
+                  <div className="RecordsPanel overflow-auto">
+                    
+                  </div>
+                </Tabs.Panel>
+
+                <Tabs.Panel value="Prescription" pt="xs">
+                  <div className="RecordsPanel overflow-auto">
+                    
+                  </div>
+                </Tabs.Panel>
+              </Tabs>
+            </div>
     </div>
   );
 }
