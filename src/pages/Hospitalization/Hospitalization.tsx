@@ -66,73 +66,19 @@ function Hospitalization() {
   useEffect(() => getUsers(), []);
   useEffect(() => getDeps(), []);
 
+  useEffect(() => {
+    const h1El = document.querySelector("h1");
+    const formEl = document.querySelector("form");
+    setTimeout(() => {
+      h1El?.classList.replace("opacity-0", "opacity-100");
+      h1El?.classList.replace("-translate-y-16", "-translate-y-0");
+      formEl?.classList.replace("opacity-0", "opacity-100");
+      formEl?.classList.replace("translate-y-16", "translate-y-0");
+    }, 500);
+  }, []);
+
 
   return(
-    /*<div>
-      <div>
-        <form
-          className="w-6/12"
-          onSubmit={form.onSubmit((values) => console.log(values))}
-          onReset={form.onReset}
-        >
-          <TextInput
-            withAsterisk
-            label="ID doktora"
-            {...form.getInputProps("id_employee")}
-          />
-          <DatePicker
-            className="basis-1/4"
-            withAsterisk
-            label="Dátum"
-            {...form.getInputProps("date")}
-          />
-
-          <Select
-            label="Vyberte pacienta"
-            placeholder="Zvoľte jedného pacienta"
-            data={patients.map((patient) => ({
-              value: patient.ROD_CISLO,
-              label:
-                patient.ROD_CISLO +
-                " " +
-                patient.MENO +
-                " " +
-                patient.PRIEZVISKO,
-            }))}
-            searchable
-            maxDropdownHeight={400}
-            nothingFound="Prázdny zoznam"
-            {...form.getInputProps("id_patient")}
-          />
-
-            <Select
-            label="Vyberte oddelenie"
-            placeholder="Zvoľte jedno oddelenie"
-            data={departments.map((department) => ({
-              value: department.NAZOV,
-              label:
-              department.NAZOV,
-            }))}
-            searchable
-            maxDropdownHeight={400}
-            nothingFound="Prázdny zoznam"
-            {...form.getInputProps("id_patient")}
-          />
-          
-          <Textarea
-            label="Popis"
-            description="Popis oddelenia"
-            radius="md"
-            {...form.getInputProps("description")}
-          />
-
-          <Button onClick={sendHospitalization} className="bg-blue-400" type="submit">
-            Odoslať
-          </Button>
-
-        </form>
-      </div>
-    </div>*/
     
     <div className="mt-10 m-auto w-2/3">
       <h1 className="mb-10 text-4xl font-bold text-center tracking-widest opacity-0 -translate-y-16 translate duration-300">
