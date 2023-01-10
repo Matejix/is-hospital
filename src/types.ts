@@ -2,6 +2,7 @@ export type LogUser = {
   password: string;
   id_employee: number;
   username: string;
+  role: string;
   exp: number;
   iat: number;
 };
@@ -72,4 +73,13 @@ export interface Prescriptions {
     liek: string[];
     popis: string;
   };
+}
+
+export interface ProfileInfo {
+  FOTOGRAFIA: Buffer;
+  CELE_MENO: string;
+  TITUL: string;
+  TEL: string;
+  EMAIL: string;
+  NAZOV: string;
 }

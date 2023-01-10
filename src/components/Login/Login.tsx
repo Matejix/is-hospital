@@ -1,13 +1,14 @@
 import { TextInput, Button, Text, Anchor, Title } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import Axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import logo from "../../assets/logo.png";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import React, { useState, useEffect } from "react";
 
 function Login() {
+  const navigate = useNavigate();
   const loginEmployee = () => {
     Axios.post("http://localhost:3000/", {
       username: form.values.username,
@@ -18,7 +19,7 @@ function Login() {
         if (response.status == 200) {
           localStorage.setItem("token", response.data.token);
           authorized();
-          window.location.href = "/app";
+          navigate("/app");
         }
       })
       .catch((err) => {
@@ -39,7 +40,7 @@ function Login() {
     authorized();
     if (localStorage.getItem("token")) {
       //todo podla toho ci je authorized
-      window.location.href = "/app";
+      navigate("/app");
     }
   }, []);
 

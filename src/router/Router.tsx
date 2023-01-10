@@ -6,6 +6,7 @@ import Home from "@/pages/Home";
 import Recipe from "@/pages/Recipe";
 import Register from "@/components/Register/Register";
 import PatientService from "@/pages/PatientService";
+import EmployeeService from "@/pages/EmployeeService";
 import Schedule from "@/pages/Schedule";
 import Hospitalization from "@/pages/Hospitalization";
 import Requester from "@/pages/Requester";
@@ -29,9 +30,9 @@ import Report12 from "@/pages/Reports/Report12";
 
 // Components
 import Menu from "@/components/Menu";
-import Footer from "@/components/Footer";
 import Login from "@/components/Login";
 import Bubble from "@/components/CornerBubbles";
+import AuthGate from "./AuthGate";
 
 const router = createBrowserRouter([
   {
@@ -53,13 +54,13 @@ const router = createBrowserRouter([
   {
     path: "/app",
     element: (
-      <>
+      <AuthGate>
         <Menu />
         <div className="pl-24">
           <Outlet />
           <Bubble />
         </div>
-      </>
+      </AuthGate>
     ),
     children: [
       {
@@ -85,6 +86,10 @@ const router = createBrowserRouter([
       {
         path: "requester",
         element: <Requester />,
+      },
+      {
+        path: "employee-service",
+        element: <EmployeeService />,
       },
       {
         path: "profile",
