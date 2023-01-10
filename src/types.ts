@@ -89,6 +89,20 @@ export interface Dates{
   DAT: Date;
 }
 
+export interface Cities{
+  NAZOV_MESTA: string;
+  PSC: string;
+}
+
+export interface BloodTypes{
+  KRVNA_SKUPINA: string;
+}
+
+export interface Insurance{
+  ID_POISTOVNE: number;
+  NAZOV: string;
+}
+
 export interface EmployeeNames{
   ID_ZAMESTNANEC: number;
   CELE_MENO: string;

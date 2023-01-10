@@ -1,8 +1,6 @@
 import getDBConnection from "../database";
 import express, { Request, Response } from "express";
-import { useMemo } from "react";
-import jwt_decode from "jwt-decode";
-import jwt from "jsonwebtoken";
+
 
 const patientServiceRouter = express.Router();
 
@@ -43,12 +41,124 @@ patientServiceRouter.post(
   }
 );
 
+patientServiceRouter.post("/deletePatient", async (req: Request, res: Response) => {
+  const {id} = req.body;
+  console.log(id);
+  const connection = await getDBConnection();
+  const query1 = await connection?.execute(
+    `delete from is_vykon where id_zaznam in (select id_zaznam from is_zaznamy where rod_cislo = '${id}')`
+  );
+ await connection?.commit();
+  const query2 = await connection?.execute(
+    `delete from is_zdravotna_karta where rod_cislo = '${id}'`
+  );
+  await connection?.commit();
+  const query3 = await connection?.execute(
+    `delete from is_zaznamy where rod_cislo = '${id}'`
+  );
+  await connection?.commit();
+  const query4 = await connection?.execute(
+    `delete from is_ziadanky where rod_cislo = '${id}'`
+  );
+  await connection?.commit();
+  const query5 = await connection?.execute(
+    `delete from is_predpisane_lieky where id_predpisu in (select id_predpisu from is_predpis where rod_cislo = '${id}')`
+  );
+  await connection?.commit();
+  const query6 = await connection?.execute(
+    `delete from is_predpis where rod_cislo = '${id}'`
+  );
+  await connection?.commit();
+  const query7 = await connection?.execute(
+    `delete from is_poistenia where rod_cislo = '${id}'`
+  );
+  await connection?.commit();
+  const query = await connection?.execute(
+     `delete from is_pacient where rod_cislo = '${id}'`
+  );
+  await connection?.commit().then(() => {
+     res.status(200).json({ message: "Success" });
+  });
+});
+
+patientServiceRouter.post("/addPatient", async (req: Request, res: Response) => {
+  const {  name,surname,birthsurname,id,birthdate,deathdate,bloodtype,employment,street,city ,insurance,insuranceStart,insuranceEnd,} = req.body;
+  console.log("here");
+
+  console.log(req.body);
+  const connection = await getDBConnection();
+ /* const query1 = await connection?.execute(
+    ``
+  );
+ await connection?.commit();
+  const query = await connection?.execute(
+     ``
+  );
+  await connection?.commit().then(() => {
+     res.status(200).json({ message: "Success" });
+  });*/
+});
+
 patientServiceRouter.get(
   "/getPatients",
   async (req: Request, res: Response) => {
     const connection = await getDBConnection();
     const query = await connection?.execute(
       `select  priezvisko || ' ' || meno as cele_meno, rod_cislo from is_pacient join is_osoba using (rod_cislo) fetch first 1000 rows only`
+    );
+
+    var data = query?.rows;
+
+    if (data != undefined) {
+      var rows = JSON.parse(JSON.stringify(query?.rows));
+      res.json(rows);
+    }
+  }
+);
+
+patientServiceRouter.get(
+  "/getBloodTypes",
+  async (req: Request, res: Response) => {
+    const connection = await getDBConnection();
+    const query = await connection?.execute(
+      `select  krvna_skupina from is_pacient
+      group by krvna_skupina`
+    );
+
+    var data = query?.rows;
+
+    if (data != undefined) {
+      var rows = JSON.parse(JSON.stringify(query?.rows));
+      res.json(rows);
+    }
+  }
+);
+
+
+patientServiceRouter.get(
+  "/getInsurances",
+  async (req: Request, res: Response) => {
+    const connection = await getDBConnection();
+    const query = await connection?.execute(
+      `select  id_poistovna, nazov from is_poistovna`
+    );
+
+    var data = query?.rows;
+
+    if (data != undefined) {
+      var rows = JSON.parse(JSON.stringify(query?.rows));
+      res.json(rows);
+    }
+  }
+);
+
+patientServiceRouter.get(
+  "/getCities",
+  async (req: Request, res: Response) => {
+    const connection = await getDBConnection();
+    const query = await connection?.execute(
+      `select  psc, nazov_mesta from is_mesto
+      order by nazov_mesta`
     );
 
     var data = query?.rows;

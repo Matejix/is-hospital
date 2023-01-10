@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import "../../styles.css";
 import useTokenData from "@/hooks/useTokenData";
-
-import { BasicInfo, Prescriptions, Records, Requests } from "@/types";
+import { useForm } from '@mantine/form';
+import { DatePicker } from '@mantine/dates';
+import { BasicInfo, Prescriptions, Records, Requests, Cities, BloodTypes, Insurance } from "@/types";
 import {
   createStyles,
   Table,
@@ -17,6 +18,9 @@ import {
   Accordion,
   Tabs,
   LoadingOverlay,
+  Modal,
+  Button,
+  Select,
 } from "@mantine/core";
 import { keys } from "@mantine/utils";
 import {
@@ -25,7 +29,6 @@ import {
   IconChevronUp,
   IconSearch,
   IconNote,
-  IconMessages,
   IconReportAnalytics,
   IconTrash,
   IconDots,
@@ -33,6 +36,8 @@ import {
 } from "@tabler/icons";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import { cL, L } from "chart.js/dist/chunks/helpers.core";
+import { ChevronDoubleLeftIcon } from "@heroicons/react/24/solid";
 
 const useStyles = createStyles((theme) => ({
   th: {
@@ -65,9 +70,8 @@ const useStyles = createStyles((theme) => ({
   item: {
     backgroundColor: "#ffffff",
 
-    borderbottom: `1px solid ${
-      theme.colorScheme === "dark" ? theme.colors.dark[4] : theme.colors.gray[3]
-    }`,
+    borderbottom: `1px solid ${theme.colorScheme === "dark" ? theme.colors.dark[4] : theme.colors.gray[3]
+      }`,
   },
 }));
 
@@ -133,43 +137,65 @@ function sortData(
   );
 }
 
+var cities: Cities[] = [];
+var bloodtypes: BloodTypes[] = [];
+var insurances: Insurance[] = [];
+
 function PatientService() {
   const { classes } = useStyles();
 
   useEffect(() => {
-    getUsers();
+    getPatients();
+    getConstantValues();
   }, []);
   const [patients, setPatients] = useState<RowData[] | null>(null);
   const [basicInfo, setBasicInfo] = useState<BasicInfo | null>(null);
   const [patientRecords, setPatientRecords] = useState<Records[] | null>(null);
-  const [patientRequests, setPatientRequests] = useState<Requests[] | null>(
-    null
-  );
-  const [patientPrescriptions, setPatientPrescriptions] = useState<
-    Prescriptions[] | null
-  >(null);
+  const [patientRequests, setPatientRequests] = useState<Requests[] | null>(null);
+  const [patientPrescriptions, setPatientPrescriptions] = useState<Prescriptions[] | null>(null);
   const [loading, setLoading] = useState(false);
   const [choosenPatient, setChoosenPatient] = useState("");
   const [search, setSearch] = useState("");
   const [sortedData, setSortedData] = useState(patients);
   const [sortBy, setSortBy] = useState<keyof RowData | null>(null);
   const [reverseSortDirection, setReverseSortDirection] = useState(false);
+  const [opened, setOpened] = useState(false);
+
 
   const employeeData = useTokenData();
 
-  const getUsers = () => {
-    // axios.post("http://localhost:3000/patientservice/getDepartmentPatients", {
-    //   id: employeeData.id_employee
-    // }).then((response: any) => {
-    //   setPatients(response.data);
-    //   setChoosenPatient(response.data[0].ROD_CISLO);
-    // });
 
+
+
+
+  const getPatients = () => {
+    setLoading(true);
     axios
       .get("http://localhost:3000/patientservice/getPatients")
       .then((response: any) => {
         setPatients(response.data);
         setChoosenPatient(response.data[0].ROD_CISLO);
+        setLoading(false);
+      });
+  };
+
+  const getConstantValues = () => {
+    axios
+      .get("http://localhost:3000/patientservice/getCities")
+      .then((response: any) => {
+        cities = response.data;
+      });
+
+    axios
+      .get("http://localhost:3000/patientservice/getBloodTypes")
+      .then((response: any) => {
+        bloodtypes = response.data;
+      });
+
+    axios
+      .get("http://localhost:3000/patientservice/getInsurances")
+      .then((response: any) => {
+        insurances = response.data;
       });
   };
 
@@ -236,15 +262,6 @@ function PatientService() {
     }
   }, [patients]);
 
-  useEffect(() => {
-    if (patients !== null) {
-      getPatientInfo();
-      getPatientRecords();
-      getPatientRequests();
-      getPatientPrescriptions();
-    }
-  }, [choosenPatient]);
-
   const setSorting = (field: keyof RowData) => {
     const reversed = field === sortBy ? !reverseSortDirection : false;
     setReverseSortDirection(reversed);
@@ -266,6 +283,21 @@ function PatientService() {
     );
   };
 
+  const deletePatient = (row: any) => {
+    axios.post("http://localhost:3000/patientservice/deletePatient", {
+      id: row
+    }).then((response: any) => {
+      getPatients();
+      setSortedData(patients);
+      if (patients)
+        setChoosenPatient(patients[0].ROD_CISLO);
+      getPatientInfo();
+      getPatientRecords();
+      getPatientRequests();
+      getPatientPrescriptions();
+    });
+  };
+
   const choosePerson = (row: RowData) => {
     setChoosenPatient(row.ROD_CISLO);
     getPatientInfo();
@@ -273,6 +305,75 @@ function PatientService() {
     getPatientRequests();
     getPatientPrescriptions();
   };
+
+  const form = useForm({
+    initialValues: {
+      name: "",
+      surname: "",
+      birthsurname: "",
+      id: "",
+      birthdate: new Date(),
+      deathdate: new Date(),
+      bloodtype: "",
+      employment: "",
+      street: "",
+      city: "",
+      insurance: "",
+      insuranceStart: new Date(),
+      insuranceEnd: new Date(),
+    },
+    validate: {
+      name: (value) => (value.length === 0 ? "Zvoľte meno" : null),
+      surname: (value) => (value.length === 0 ? "Zvoľte priezvisko" : null),
+      id: (value) => (value.length === 0 || value.length > 11 ? "Zvoľte správne rodné číslo" : null),
+      street: (value) => (value.length === 0 ? "Zvoľte ulicu" : null),
+      bloodtype: (value) => (value.length === 0 ? "Zvoľte krvnú skupinu" : null),
+      city: (value) => (value.length === 0 ? "Zvoľte mesto" : null),
+      insurance: (value) => (value.length === 0 ? "Zvoľte poisťovňu" : null),
+      birthdate: (value) => (value === null ? "Zvoľte dátum narodenia" : null),
+      insuranceStart: (value) => (value === null ? "Zvoľte dátum začiatku poistenia" : null),
+      birthsurname: (value) => (new Date(value) > new Date() ? "Zvoľte správny dátum úmrtia" : null),
+    },
+  });
+
+
+  const sendForm = () => {
+    console.log("here");
+    var birth = new Date(form.values.birthdate);
+    var birthdate = birth.getDate() + "." + (birth.getUTCMonth() + 1) + "." + birth.getFullYear();
+    var deathdate = '';
+    if (form.values.deathdate) {
+      var death = new Date(form.values.deathdate);
+      deathdate = death.getDate() + "." + (death.getUTCMonth() + 1) + "." + death.getFullYear();
+    }
+    var insurancestart = new Date(form.values.insuranceStart);
+    var insurancestartdate = insurancestart.getDate() + "." + (insurancestart.getUTCMonth() + 1) + "." + insurancestart.getFullYear();
+    var insuranceenddate = '';
+    if (form.values.insuranceEnd) {
+      var insuranceend = new Date(form.values.insuranceEnd);
+      var insuranceenddate = insuranceend.getDate() + "." + (insuranceend.getUTCMonth() + 1) + "." + insuranceend.getFullYear();
+    }
+
+    axios.post("http://localhost:3000/patientService/addPatient", {
+      name: form.values.name,
+      surname: form.values.surname,
+      birthsurname: form.values.birthsurname,
+      id: form.values.id,
+      birthdate: birthdate,
+      deathdate: deathdate,
+      bloodtype: form.values.bloodtype,
+      employment: form.values.employment,
+      street: form.values.street,
+      city: form.values.city,
+      insurance: form.values.insurance,
+      insuranceStart: insurancestartdate,
+      insuranceEnd: insuranceenddate,
+    }).then((response: any) => {
+      // form.reset();
+      console.log("");
+    });
+  };
+
   const rows = sortedData?.map((row: any) => (
     <tr key={row.ROD_CISLO}>
       <td onClick={() => choosePerson(row)}>{row.CELE_MENO}</td>
@@ -298,7 +399,7 @@ function PatientService() {
                 Pridať predpis
               </Link>
             </Menu.Item>
-            <Menu.Item icon={<IconTrash size={16} stroke={1.5} />} color="red">
+            <Menu.Item icon={<IconTrash size={16} stroke={1.5} />} color="red" onClick={() => deletePatient(row.ROD_CISLO)}>
               Zmazať pacienta
             </Menu.Item>
           </Menu.Dropdown>
@@ -389,7 +490,154 @@ function PatientService() {
 
   return (
     <div className="PatientsInfo">
-      <div className="TableBlock  m-2 pt-20 p-2 drop-shadow-lg">
+      <div className="TableBlock  m-2 mt-20 p-2 drop-shadow-lg bg-white">
+        <div>
+          <Modal
+            opened={opened}
+            onClose={() => setOpened(false)}
+            size='lg'
+          >
+            {
+              <div>
+                <h1 className="font-bold	text-center text-lg	text-sky-800 mb-5		"> Pridať pacienta </h1>
+                <div className="flex justify-between mb-2 space-x-3 ">
+                  <TextInput
+                    withAsterisk
+                    radius="lg"
+                    label="Meno"
+                    {...form.getInputProps("name")}
+                  />
+                  <TextInput
+                    withAsterisk
+                    radius="lg"
+                    label="Priezvisko"
+                    {...form.getInputProps("surname")}
+                  />
+                  <TextInput
+                    radius="lg"
+                    label="Rodné priezvisko"
+                    {...form.getInputProps("birthsurname")}
+                  />
+                </div>
+                <div className="flex  mb-2 space-x-3 ">
+                  <TextInput
+                    withAsterisk
+                    radius="lg"
+                    label="Rodné číslo"
+                    {...form.getInputProps("id")}
+                  />
+
+                  <DatePicker
+                    withAsterisk
+                    radius="lg"
+                    label="Dátum narodenia"
+
+                    locale="sk"
+                    {...form.getInputProps("birthdate")}
+                  />
+                  <DatePicker
+                    radius="lg"
+                    label="Dátum úmrtia"
+                    locale="sk"
+                    {...form.getInputProps("deathdate")}
+                  />
+                </div>
+                <div className="flex justify-between  space-x-3 pb-3 border-b border-gray-200 ">
+                  <Select
+                    withAsterisk
+                    radius="lg"
+                    className="basis-1/4 mr-10"
+                    label="Krvná skupina"
+                    {...form.getInputProps("bloodtype")}
+                    data={bloodtypes.map((bloodtype) => ({
+                      value: bloodtype.KRVNA_SKUPINA,
+                      label:
+                        bloodtype.KRVNA_SKUPINA,
+                    }))}
+
+                  />
+                  <TextInput
+                    radius="lg"
+                    label="Zamestnanie"
+                    {...form.getInputProps("employment")}
+                  />
+                </div>
+
+
+
+
+
+                <h1 className="	text-sky-800 text-sm font-semibold">Adresa</h1>
+
+                <div className="flex justify-between space-x-3 pb-3 border-b border-gray-200 ">
+                  <TextInput
+                    className="basis-1/2"
+
+                    withAsterisk
+                    radius="lg"
+                    label="Ulica a číslo"
+                    {...form.getInputProps("street")}
+                  />
+                  <Select
+                    className="basis-1/2"
+                    withAsterisk
+                    radius="lg"
+                    label="Mesto a PSČ"
+                    {...form.getInputProps("city")}
+                    data={cities.map((city) => ({
+                      value: city.PSC,
+                      label:
+                        city.NAZOV_MESTA + " - " + city.PSC,
+                    }))}
+                  />
+
+                </div>
+
+                <h1 className="	text-sky-800 text-sm font-semibold">Aktuálne poistenie</h1>
+
+                <div className="flex justify-between  space-x-3 pb-3 border-b border-gray-200 ">
+                  <Select
+                    withAsterisk
+                    radius="lg"
+                    label="Poisťovňa"
+                    {...form.getInputProps("insurance")}
+                    data={insurances.map((insurance) => ({
+                      value: insurance.ID_POISTOVNE,
+                      label:
+                        insurance.NAZOV,
+                    }))}
+                  />
+
+                  <DatePicker
+                    withAsterisk
+                    radius="lg"
+                    label="Dátum začiatku"
+                    value={new Date()}
+                    locale="sk"
+                    {...form.getInputProps("insuranceStart")}
+                  />
+                  <DatePicker
+                    radius="lg"
+                    label="Dátum ukončenia"
+                    locale="sk"
+                    {...form.getInputProps("insuranceEnd")}
+                  />
+                </div>
+
+
+                <div className="flex items-center justify-center h-screen h-12 m-2">
+                  <Button onClick={() => sendForm()} variant="outline" radius="lg" size="md">
+                    Odoslať
+                  </Button>
+                </div>
+              </div>
+            }
+          </Modal>
+
+          <Group position="right">
+            <Button className="drop-shadow-lg p-2" variant="outline" radius="lg" onClick={() => setOpened(true)}>Pridať pacienta</Button>
+          </Group>
+        </div>
         <ScrollArea className="bg-white ">
           <TextInput
             placeholder="Prehľadávať"
