@@ -31,6 +31,7 @@ import Report12 from "@/pages/Reports/Report12";
 import Menu from "@/components/Menu";
 import Footer from "@/components/Footer";
 import Login from "@/components/Login";
+import Bubble from "@/components/CornerBubbles";
 
 const router = createBrowserRouter([
   {
@@ -56,6 +57,7 @@ const router = createBrowserRouter([
         <Menu />
         <div className="pl-24">
           <Outlet />
+          <Bubble />
         </div>
       </>
     ),

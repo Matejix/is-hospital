@@ -7,17 +7,28 @@
 }
 
 .TableBlock {
-    max-width: 65%;
+    max-width: 40%;
     margin: 5%;
 }
 
 .MoreInfo {
-    min-width: 35%;
+    min-width: 60%;
     background-color: #2E62B3;
-    min-height: 850px;
+}
+
+
+.CardInfo {
+    width: 50%;
+    height: 95%;
 }
 
 .rowHeader {
     border-bottom: 1px solid #DEE2E6;
+
+}
+
+.RecordsPanel {
+    max-height: 400px;
+
 
 }

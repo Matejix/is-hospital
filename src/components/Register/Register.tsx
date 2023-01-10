@@ -1,20 +1,21 @@
 import { TextInput, Button, Text, Anchor, Title, Select } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { Link } from "react-router-dom";
-import Axios from "axios";
-import {ToastContainer, toast} from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
+import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function Register() {
   const registerEmployee = () => {
-    Axios.post("http://localhost:3000/register", {
-      username: form.values.username,
-      password: form.values.password,
-    })
-    .then(() => {
+    axios
+      .post("http://localhost:3000/register", {
+        username: form.values.username,
+        password: form.values.password,
+      })
+      .then(() => {
         window.location.href = "/";
-    })
-    .catch((err) => {
+      })
+      .catch((err) => {
         console.log(err);
         toast.warn(err.response.data.message, {
           position: "top-right",
@@ -25,12 +26,11 @@ function Register() {
           draggable: true,
           progress: undefined,
           theme: "light",
-          });
+        });
       });
   };
 
   const form = useForm({
-
     initialValues: {
       username: "",
       password: "",
@@ -59,14 +59,12 @@ function Register() {
           Registration
         </Title>
         <form onSubmit={form.onSubmit((values) => console.log(values))}>
-         
           <TextInput
             type="text"
             label="ID number"
             placeholder="Please enter your ID number"
             size={"lg"}
             {...form.getInputProps("username")}
-            
           />
           <TextInput
             className="mt-8"
@@ -75,7 +73,6 @@ function Register() {
             type={"password"}
             size={"lg"}
             {...form.getInputProps("password")}
-            
           />
           <TextInput
             className="mt-8"
@@ -100,13 +97,10 @@ function Register() {
             size="lg"
             className="bg-indigo-400 w-1/2 mx-auto block mt-8"
             onClick={registerEmployee}
-
           >
             Create Account
           </Button>
         </form>
-        
-
       </div>
       <ToastContainer
         position="top-right"
@@ -119,7 +113,7 @@ function Register() {
         draggable
         pauseOnHover
         theme="light"
-        />
+      />
     </div>
   );
 }
