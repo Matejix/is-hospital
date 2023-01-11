@@ -17,6 +17,10 @@ export interface DepartmentsData{
   POPIS: string;
 }
 
+export interface Report_typeData{
+  TYP_SPRAVY: string;
+}
+
 export interface PatientsData {
   MENO: string;
   PRIEZVISKO: string;
