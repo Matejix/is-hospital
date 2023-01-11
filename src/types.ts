@@ -21,6 +21,10 @@ export interface Report_typeData{
   TYP_SPRAVY: string;
 }
 
+export interface AlergiesData{
+  NAZOV_ALERGIE: string;
+}
+
 export interface PatientsData {
   MENO: string;
   PRIEZVISKO: string;

@@ -34,6 +34,16 @@ hospitalizationController.get("/getReportTypes", async (req: Request, res: Respo
   res.json(rows);
 });
 
+hospitalizationController.get("/getAlergies", async (req: Request, res: Response) => {
+  const connection = await getDBConnection();
+
+  const query = await connection?.execute(
+    `select nazov_alergie from is_alergie o fetch first 60 rows only`
+  );
+  var rows = JSON.parse(JSON.stringify(query?.rows));
+  res.json(rows);
+});
+
 
 
 /*hospitalizationRouter.post("/", async (req: Request, res: Response) => {
