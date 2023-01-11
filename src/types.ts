@@ -38,6 +38,10 @@ export interface BasicInfo {
   KRVNA_SKUPINA: string;
   ZAMESTNANIE: string;
   POISTOVNA: string;
+  ID_POISTOVNA: number;
+  DAT_OD: Date;
+  DAT_DO: Date;
+  ID_POISTENIA: number;
 }
 
 export interface Records {

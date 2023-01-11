@@ -4,6 +4,9 @@ import useTokenData from "@/hooks/useTokenData";
 import { useForm } from '@mantine/form';
 import { DatePicker } from '@mantine/dates';
 import { BasicInfo, Prescriptions, Records, Requests, Cities, BloodTypes, Insurance } from "@/types";
+
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import {
   createStyles,
   Table,
@@ -33,6 +36,7 @@ import {
   IconTrash,
   IconDots,
   IconAlertTriangle,
+  IconPencil
 } from "@tabler/icons";
 import axios from "axios";
 import { Link } from "react-router-dom";
@@ -145,7 +149,7 @@ function PatientService() {
   const { classes } = useStyles();
 
   useEffect(() => {
-    //getPatients();
+    getPatients();
     getConstantValues();
   }, []);
   const [patients, setPatients] = useState<RowData[] | null>(null);
@@ -160,6 +164,7 @@ function PatientService() {
   const [sortBy, setSortBy] = useState<keyof RowData | null>(null);
   const [reverseSortDirection, setReverseSortDirection] = useState(false);
   const [opened, setOpened] = useState(false);
+  const [editing, setEditing] = useState(false);
 
 
   const employeeData = useTokenData();
@@ -207,8 +212,10 @@ function PatientService() {
         id: choosenPatient,
       })
       .then((response: any) => {
+        console.log(response.data);
         setBasicInfo(response.data[0]);
         setLoading(false);
+        console.log(basicInfo);
       });
   };
 
@@ -285,18 +292,26 @@ function PatientService() {
   };
 
   const deletePatient = (row: any) => {
+    if(confirm("Naozaj chcete zmazať pacienta? ")){
     axios.post("http://localhost:3000/patientservice/deletePatient", {
       id: row
     }).then((response: any) => {
-      getPatients();
-      setSortedData(patients);
-      if (patients)
-        setChoosenPatient(patients[0].ROD_CISLO);
-      getPatientInfo();
-      getPatientRecords();
-      getPatientRequests();
-      getPatientPrescriptions();
-    });
+      window.location.href = "/patient-service";
+
+    });}
+  };
+
+  const editPatient = () => {
+    if (basicInfo) {
+      form.setValues({
+        name: basicInfo.MENO, surname: basicInfo.PRIEZVISKO, birthsurname: basicInfo.RODNE_PRIEZVISKO,
+        birthdate: new Date(basicInfo.DATUM_NARODENIA), deathdate: basicInfo.DATUM_UMRTIA ? new Date(basicInfo.DATUM_UMRTIA) : new Date, bloodtype: basicInfo.KRVNA_SKUPINA,
+        employment: basicInfo.ZAMESTNANIE, street: basicInfo.ULICA, city: basicInfo.PSC, insurance: basicInfo.ID_POISTOVNA,
+        title: basicInfo.TITUL, insuranceEnd: new Date(basicInfo.DAT_DO), insuranceStart: new Date(basicInfo.DAT_OD), id: basicInfo.ROD_CISLO
+      });
+      setOpened(true);
+      setEditing(true);
+    }
   };
 
   const choosePerson = (row: RowData) => {
@@ -335,66 +350,129 @@ function PatientService() {
       birthdate: (value) => (value === null ? "Zvoľte dátum narodenia" : null),
       insuranceStart: (value) => (value === null ? "Zvoľte dátum začiatku poistenia" : null),
       birthsurname: (value) => (new Date(value) > new Date() ? "Zvoľte správny dátum úmrtia" : null),
-    
     },
   });
 
 
   const sendForm = () => {
-    console.log("here");
-    var birth = new Date(form.values.birthdate);
-    var birthdate = birth.getDate() + "." + (birth.getUTCMonth() + 1) + "." + birth.getFullYear();
-    var deathdate = '';
-    if (form.values.deathdate) {
-      var death = new Date(form.values.deathdate);
-      deathdate = death.getDate() + "." + (death.getUTCMonth() + 1) + "." + death.getFullYear();
-    }
-    var insurancestart = new Date(form.values.insuranceStart);
-    var insurancestartdate = insurancestart.getDate() + "." + (insurancestart.getUTCMonth() + 1) + "." + insurancestart.getFullYear();
-    var insuranceenddate = '';
-    if (form.values.insuranceEnd) {
-      var insuranceend = new Date(form.values.insuranceEnd);
-      var insuranceenddate = insuranceend.getDate() + "." + (insuranceend.getUTCMonth() + 1) + "." + insuranceend.getFullYear();
+    if (editing && basicInfo) {
+      var deathdate = '';
+      var insuranceEnd = '';
+      var insuranceStart = '';
+      var insurance = '';
+  
+     
+      if (form.values.insurance != basicInfo.ID_POISTOVNA.toString()){
+        insurance = form.values.insurance;
+        var start = new Date(form.values.insuranceStart);
+        insuranceStart = start.getDate() + "." + (start.getUTCMonth() + 1) + "." + start.getFullYear();
+        var end = new Date(form.values.insuranceEnd);
+        insuranceEnd = end.getDate() + "." + (end.getUTCMonth() + 1) + "." + end.getFullYear();
+      }
+      if (form.values.insuranceEnd && form.values.insuranceEnd != new Date(basicInfo.DAT_OD))
+      {
+          var end = new Date(form.values.insuranceEnd);
+          insuranceEnd = end.getDate() + "." + (end.getUTCMonth() + 1) + "." + end.getFullYear();
+      }
+      if (form.values.deathdate && form.values.deathdate != new Date(basicInfo.DATUM_UMRTIA))
+      {
+          var end = new Date(form.values.deathdate);
+          deathdate = end.getDate() + "." + (end.getUTCMonth() + 1) + "." + end.getFullYear();
+      }
+
+      
+      axios.post("http://localhost:3000/patientService/editPatient", {
+        id: form.values.id,
+        name: form.values.name,
+        surname: form.values.surname,
+        birthsurname: form.values.birthsurname ? form.values.birthsurname : '',
+        deathdate: deathdate,
+        bloodtype: form.values.bloodtype,
+        employment: form.values.employment ? form.values.employment : '',
+        street: form.values.street,
+        city: form.values.city,
+        insurance: insurance,
+        insuranceStart: insuranceStart,
+        insuranceEnd: insuranceEnd,
+        title: form.values.title ? form.values.title : '',
+        insuranceId: basicInfo.ID_POISTENIA
+      }).then((response: any) => {
+        setEditing(false);
+        setOpened(false);
+        form.reset();
+        console.log(response.data.message);
+       
+        getPatientInfo();
+        console.log(basicInfo);
+        toast.success(response.data.message, {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+      });
+      
+
+
+    } else {
+      var birth = new Date(form.values.birthdate);
+      var birthdate = birth.getDate() + "." + (birth.getUTCMonth() + 1) + "." + birth.getFullYear();
+      var deathdate = '';
+      if (form.values.deathdate) {
+        var death = new Date(form.values.deathdate);
+        deathdate = death.getDate() + "." + (death.getUTCMonth() + 1) + "." + death.getFullYear();
+      }
+      var insurancestart = new Date(form.values.insuranceStart);
+      var insurancestartdate = insurancestart.getDate() + "." + (insurancestart.getUTCMonth() + 1) + "." + insurancestart.getFullYear();
+      var insuranceenddate = '';
+      if (form.values.insuranceEnd) {
+        var insuranceend = new Date(form.values.insuranceEnd);
+        var insuranceenddate = insuranceend.getDate() + "." + (insuranceend.getUTCMonth() + 1) + "." + insuranceend.getFullYear();
+      }
+
+      axios.post("http://localhost:3000/patientService/addPatient", {
+        name: form.values.name,
+        surname: form.values.surname,
+        birthsurname: form.values.birthsurname,
+        id: form.values.id,
+        birthdate: birthdate,
+        deathdate: deathdate,
+        bloodtype: form.values.bloodtype,
+        employment: form.values.employment,
+        street: form.values.street,
+        city: form.values.city,
+        insurance: form.values.insurance,
+        insuranceStart: insurancestartdate,
+        insuranceEnd: insuranceenddate,
+        title: form.values.title,
+      }).then((response: any) => {
+        form.reset();
+      });
     }
 
-    axios.post("http://localhost:3000/patientService/addPatient", {
-      name: form.values.name,
-      surname: form.values.surname,
-      birthsurname: form.values.birthsurname,
-      id: form.values.id,
-      birthdate: birthdate,
-      deathdate: deathdate,
-      bloodtype: form.values.bloodtype,
-      employment: form.values.employment,
-      street: form.values.street,
-      city: form.values.city,
-      insurance: form.values.insurance,
-      insuranceStart: insurancestartdate,
-      insuranceEnd: insuranceenddate,
-      title: form.values.title,
-    }).then((response: any) => {
-      // form.reset();
-      console.log("");
-    });
   };
 
   const birthday = () => {
-    var id = form.values.id;
-    if(id.length == 11
-      ){
-      var year = form.values.id.substring(0,2); 
-      var month = parseInt(form.values.id.substring(2,4)) % 50; 
-      var day = form.values.id.substring(4,6); 
-      if(parseInt(year,10) > 23){
-        year = "19" + year;
-      } else {
-        year = "20" + year;
+    if (form.values.id && !editing && opened) {
+      var id = form.values.id;
+      if (id.length == 11
+      ) {
+        var year = form.values.id.substring(0, 2);
+        var month = parseInt(form.values.id.substring(2, 4)) % 50;
+        var day = form.values.id.substring(4, 6);
+        if (parseInt(year, 10) > 23) {
+          year = "19" + year;
+        } else {
+          year = "20" + year;
+        }
+        var birthday = month + "." + day + "." + year;
+        form.values.birthdate = new Date(birthday);
       }
-    var birthday = month + "." + day + "." + year;
-    console.log(birthday);
-
-    form.values.birthdate = new Date(birthday);
-  }
+    }
   };
 
   const rows = sortedData?.map((row: any) => (
@@ -425,6 +503,7 @@ function PatientService() {
             <Menu.Item icon={<IconTrash size={16} stroke={1.5} />} color="red" onClick={() => deletePatient(row.ROD_CISLO)}>
               Zmazať pacienta
             </Menu.Item>
+
           </Menu.Dropdown>
         </Menu>
       </td>
@@ -517,16 +596,19 @@ function PatientService() {
         <div>
           <Modal
             opened={opened}
-            onClose={() => setOpened(false)}
+            onClose={() => {
+              setOpened(false);
+              setEditing(false)
+            }}
             size='lg'
           >
             {
               <div className="">
                 <div className="border-b border-gray-500 mb-2">
-                <h1 className="font-bold	text-center text-lg	text-sky-800 mb-5		"> Pridať pacienta </h1>
+                  <h1 className="font-bold	text-center text-lg	text-sky-800 mb-5		"> {editing ? "Upraviť pacienta" : "Pridať pacienta"} </h1>
                 </div>
                 <div className="flex justify-between mb-2 space-x-3 ">
-                <TextInput
+                  <TextInput
                     className="basis-1/6"
                     radius="lg"
                     label="Titul"
@@ -553,6 +635,7 @@ function PatientService() {
                 <div className="flex  mb-2 space-x-3 ">
                   <TextInput
                     withAsterisk
+                    disabled={editing ? true : false}
                     radius="lg"
                     label="Rodné číslo s lomkou"
                     on={birthday()}
@@ -563,7 +646,7 @@ function PatientService() {
                     withAsterisk
                     radius="lg"
                     label="Dátum narodenia"
-
+                    disabled={editing ? true : false}
                     locale="sk"
                     {...form.getInputProps("birthdate")}
                   />
@@ -636,7 +719,7 @@ function PatientService() {
                     {...form.getInputProps("insurance")}
                     data={insurances.map((insurance) => ({
                       value: insurance.ID_POISTOVNA,
-                      label: insurance.NAZOV 
+                      label: insurance.NAZOV
                     }))}
                   />
 
@@ -740,8 +823,15 @@ function PatientService() {
               <a className=" font-semibold"> Zdravotná karta </a>
               <a className="text-cyan-900	"> {basicInfo?.ROD_CISLO}</a>
             </div>
+
             <div className="py-2 px-6 border-b border-gray-300 flex flex-row">
+              <div className="absolute left-3/4 ml-10">
+                <Button variant="outline" radius="lg" size="xs" onClick={() => editPatient()} leftIcon={<IconPencil size={16} stroke={1.5} />} >
+                  Upraviť
+                </Button>
+              </div>
               <div>
+
                 <h5 className="font-bold text-sm pb-1  text-sky-800 ">
                   Poisťovňa:{" "}
                 </h5>
@@ -800,7 +890,7 @@ function PatientService() {
                 <h5 className="pb-1 text-gray-500">
                   {" "}
                   {basicInfo?.DATUM_UMRTIA
-                    ? new Date(basicInfo.DATUM_NARODENIA).toLocaleDateString()
+                    ? new Date(basicInfo.DATUM_UMRTIA).toLocaleDateString()
                     : "-"}
                 </h5>
                 <h5 className="pb-1"> {basicInfo?.KRVNA_SKUPINA} </h5>
@@ -815,6 +905,18 @@ function PatientService() {
                 </h5>
               </div>
             </div>
+            <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
             <div>
               <Tabs defaultValue="Records">
                 <Tabs.List className=" px-6 bg-slate-100	  ">

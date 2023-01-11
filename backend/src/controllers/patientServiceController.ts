@@ -92,21 +92,21 @@ patientServiceRouter.post("/addPatient", async (req: Request, res: Response) => 
   );
   const queryInsuranceID = await connection?.execute(
     `select max(id_poistenia) as id from is_poistenia`
- );
- if(queryID?.rows != undefined){
+  );
+  if (queryID?.rows != undefined) {
     const queryPerson = await connection?.execute(
       `insert into is_osoba (rod_cislo, meno, priezvisko, ulica, psc) values (
     '${id}','${name}','${surname}','${street}','${city}')`
     );
     await connection?.commit();
-    if(title != ''){
+    if (title != '') {
       const query = await connection?.execute(
         `update is_osoba set titul = '${title}'
         where rod_cislo = '${id}'`
       );
       await connection?.commit();
     }
-    if(birthsurname != ''){
+    if (birthsurname != '') {
       const query = await connection?.execute(
         `update is_osoba set rodne_priezvisko = '${birthsurname}'
         where rod_cislo = '${id}'`
@@ -120,7 +120,7 @@ patientServiceRouter.post("/addPatient", async (req: Request, res: Response) => 
     );
     await connection?.commit();
 
-    if(deathdate != ''){
+    if (deathdate != '') {
       const query = await connection?.execute(
         `update is_pacient set datum_umrtia = to_date('${birthdate}', 'DD.MM.YYYY')
          where rod_cislo = '${id}'`
@@ -128,7 +128,7 @@ patientServiceRouter.post("/addPatient", async (req: Request, res: Response) => 
       await connection?.commit();
     }
 
-    if(employment != ''){
+    if (employment != '') {
       const query = await connection?.execute(
         `update is_pacient set zamestnanie = '${employment}'
         where rod_cislo = '${id}'`
@@ -142,7 +142,7 @@ patientServiceRouter.post("/addPatient", async (req: Request, res: Response) => 
       (${insuranceID}, '${id}',${insurance},to_date('${insuranceStart}', 'DD.MM.YYYY'))`
     );
     await connection?.commit();
-    if(insuranceEnd != ''){
+    if (insuranceEnd != '') {
       const query = await connection?.execute(
         `update is_poistenia set dat_do = to_date('${insuranceEnd}', 'DD.MM.YYYY')
          where rod_cislo = '${id}'`
@@ -156,6 +156,72 @@ patientServiceRouter.post("/addPatient", async (req: Request, res: Response) => 
   } else {
     return res.status(400).json({ message: "Užívateľ s daným rodným číslom už existuje!" });
   }
+});
+
+patientServiceRouter.post("/editPatient", async (req: Request, res: Response) => {
+  const { id, name, surname, birthsurname, deathdate, bloodtype, employment, street, city, insurance, insuranceStart, insuranceEnd, title, insuranceId } = req.body;
+  console.log(req.body);
+  const connection = await getDBConnection();
+
+
+  const queryPerson = await connection?.execute(
+    `update is_osoba set titul = '${title}',
+     meno = '${name}',
+     priezvisko = '${surname}',
+     rodne_priezvisko  = '${birthsurname}',
+     ulica = '${street}',
+     psc  = '${city}'
+      where rod_cislo = '${id}'`
+  );
+  await connection?.commit();
+  if (deathdate != '' ) {
+    const queryPatient = await connection?.execute(
+      `update is_pacient set zamestnanie = '${employment}',
+       krvna_skupina = '${bloodtype}',
+       datum_umrtia = to_date('${deathdate}', 'DD.MM.YYYY')
+      where rod_cislo = '${id}'`
+    );
+    await connection?.commit();
+  } else {
+    const queryPatient = await connection?.execute(
+      `update is_pacient set zamestnanie = '${employment}',
+       krvna_skupina = '${bloodtype}'
+       where rod_cislo = '${id}'`
+    );
+    await connection?.commit();
+  }
+  if (insurance != '') {
+
+    const queryInsuranceID = await connection?.execute(
+      `select max(id_poistenia) as id from is_poistenia`
+    );
+    var obj = JSON.parse(JSON.stringify(queryInsuranceID?.rows));
+    var insuranceID = obj[0].ID + 1;
+    if (insuranceEnd != '') {
+      const queryInsurance = await connection?.execute(
+        `insert into is_poistenia (id_poistenia, rod_cislo, id_poistovna, dat_od, dat_do) values
+       (${insuranceID}, '${id}',${insurance},to_date('${insuranceStart}', 'DD.MM.YYYY'), to_date('${insuranceEnd}', 'DD.MM.YYYY'))`
+      );
+      await connection?.commit();
+    } else {
+      const queryInsurance = await connection?.execute(
+        `insert into is_poistenia (id_poistenia, rod_cislo, id_poistovna, dat_od) values
+         (${insuranceID}, '${id}',${insurance},to_date('${insuranceStart}', 'DD.MM.YYYY'))`
+      );
+      await connection?.commit();
+    }
+  }
+
+  if (insurance == '' && insuranceEnd != '') {
+    const queryInsurance = await connection?.execute(
+      `update is_poistenia set dat_do = to_date('${insuranceEnd}', 'DD.MM.YYYY') 
+        where id_poistenia = '${insuranceId}'`
+    );
+    await connection?.commit();
+  }
+
+  res.status(200).json({ message: "Dáta úspešne zmenené" });
+
 });
 
 patientServiceRouter.get(
@@ -236,13 +302,17 @@ patientServiceRouter.post(
     const connection = await getDBConnection();
 
     const query = await connection?.execute(
-      `select rod_cislo, titul, meno, priezvisko, rodne_priezvisko, ulica, psc, nazov_mesta, f_datum_narodenia(rod_cislo) as datum_narodenia, datum_umrtia, krvna_skupina, zamestnanie, nazov as poistovna from is_pacient
-    join is_osoba using (rod_cislo)
-    join is_mesto using (psc)
-    join is_poistenia using (rod_cislo)
-    join is_poistovna using (id_poistovna)
-    where dat_do is null and
-     rod_cislo = '${id}'`
+      `
+      select rod_cislo, titul, meno, priezvisko, rodne_priezvisko, ulica, psc, nazov_mesta, datum_narodenia,
+             datum_umrtia, krvna_skupina, zamestnanie, poistovna, id_poistovna, dat_od, dat_do, id_poistenia from (
+      select rod_cislo, titul, meno, priezvisko, rodne_priezvisko, ulica, psc, nazov_mesta, f_datum_narodenia(rod_cislo) as datum_narodenia,
+             datum_umrtia, krvna_skupina, zamestnanie, nazov as poistovna, id_poistovna, dat_od, dat_do, id_poistenia, row_number() over (partition by rod_cislo order by dat_od desc ) rn from is_pacient
+          join is_osoba using (rod_cislo)
+          join is_mesto using (psc)
+          join is_poistenia using (rod_cislo)
+          join is_poistovna using (id_poistovna)
+          where rod_cislo = '${id}')
+          where rn = 1`
     );
 
     var data = query?.rows;
