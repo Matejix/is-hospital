@@ -15,11 +15,18 @@ import { DepartmentsData, PatientsData, Report_typeData, AlergiesData } from "@/
 
 
 
+
 function Hospitalization() {
   const [patients, setPatients] = useState<PatientsData[]>([]);
   const [departments, setDepartments] = useState<DepartmentsData[]>([]);
   const [reportTypes, setReportTypes] = useState<Report_typeData[]>([]);
   const [alergies, setAlergies] = useState<AlergiesData[]>([]);
+  const [selectedRecord, setSelectedRecord] = useState<String>();
+
+
+  const radioHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSelectedRecord(event.target.value);
+  };
 
 
   const getUsers = () => {
@@ -88,22 +95,6 @@ function Hospitalization() {
     },
   });
 
-  
-  const form1 = useForm({
-    initialValues: {
-      id_employee1: datas.id_employee,
-      id_patient1: "",
-      date1: new Date(),
-      alergies1: [],
-      description1: "",
-    },
-    validate: {
-      id_patient1: (value) => (value.length === 0 ? "Zvoľte pacienta" : null),
-      alergies1: (value) => (!value.length ? "Zvoľte typ" : null),
-    },
-  });
-
-
   useEffect(() => getUsers(), []);
   useEffect(() => getReps(), []);
   useEffect(() => getAlrgs(), []);
@@ -122,6 +113,8 @@ function Hospitalization() {
 
   return (
 
+    
+
     <div className="mt-10 m-auto w-2/3">
       <h1 className="mb-10 text-4xl font-bold text-center tracking-widest opacity-0 -translate-y-16 translate duration-300">
         Záznam
@@ -129,20 +122,57 @@ function Hospitalization() {
       </h1>
 
       <div>
-        <Tabs defaultValue="Records" className="table-auto font-bold">
-          <Tabs.List className=" bg-white p-0 m-0">
-            <Tabs.Tab value="Records" className="text-base">Správa</Tabs.Tab>
-            <Tabs.Tab value="Allergy" className="text-base">Alergie</Tabs.Tab>
-            <Tabs.Tab value="Prescription" className="text-base">Predpisy</Tabs.Tab>
-          </Tabs.List>
-
-          <Tabs.Panel value="Records" >
+        
             <div className="RecordsPanel">
+
+
             <form
                 className="flex flex-col m-auto pl-6 pr-6 pt-14 pb-14 bg-white shadow-xl border-2 border-slate-100 opacity-0 translate-y-16 translate duration-300"
                 onSubmit={form.onSubmit(form.reset)}
                 onReset={form.onReset}
               >
+
+
+      <fieldset className="pt-0 m-auto">
+        <p>
+          <input
+            type="radio"
+            name="drink"
+            value="Coffee"
+            id="coffee"
+            onChange={radioHandler}
+          />
+          <label htmlFor="coffee" className="pr-4 pl-1">Coffee</label>
+        
+
+        
+          <input
+            type="radio"
+            name="drink"
+            value="Tea"
+            id="tea"
+            onChange={radioHandler}
+          />
+          <label htmlFor="tea" className="pr-4 pl-1">Green Tea</label>
+        
+
+        
+          <input
+            type="radio"
+            name="drink"
+            value="Pumpkin Juice"
+            id="pumpkin"
+            onChange={radioHandler}
+          />
+          <label htmlFor="pumpkin" className="pr-4 pl-1">Pumpkin Juice</label>
+        </p>
+      </fieldset>
+
+      {/* Display the selected drink */}
+      {selectedRecord && <h2>{selectedRecord}</h2>}
+
+
+
                 <div className="flex justify-between mb-9">
                   <TextInput
                     className="basis-1/6"
@@ -208,100 +238,13 @@ function Hospitalization() {
                   Odoslať
                 </Button>
               </form>
+
+              
             </div>
-          </Tabs.Panel>
-
-
-
-          <Tabs.Panel value="Allergy">
-            <div className="AllergiesPanel">
-
-              <form
-                className="flex flex-col m-auto pl-6 pr-6 pt-14 pb-14 bg-white shadow-xl border-2 border-slate-100 opacity-0 translate-y-16 translate duration-300"
-                onSubmit={form1.onSubmit(form1.reset)}
-                onReset={form1.onReset}
-              >
-                <div className="flex justify-between mb-9">
-                  <TextInput
-                    className="basis-1/6"
-                    withAsterisk
-                    label="ID doktora"
-                    {...form1.getInputProps("id_employee1")}
-                  />
-                  <DatePicker
-                    className="basis-1/4"
-                    withAsterisk
-                    label="Dátum"
-                    {...form1.getInputProps("date1")}
-                  />
-
-                  <Select
-                    className="basis-1/2"
-                    withAsterisk
-                    label="Vyberte pacienta"
-                    placeholder="Zvoľte jedného pacienta"
-                    data={patients.map((patient) => ({
-                      value: patient.ROD_CISLO,
-                      label:
-                        patient.ROD_CISLO +
-                        " " +
-                        patient.MENO +
-                        " " +
-                        patient.PRIEZVISKO,
-                    }))}
-                    searchable
-                    maxDropdownHeight={400}
-                    nothingFound="Prázdny zoznam"
-                    {...form1.getInputProps("id_patient1")}
-                  />
-                </div>
-                <MultiSelect
-                  className="mb-8 pt-4"
-                  label="Vyberte typ alergie"
-                  placeholder="Zvoľte typ alergie"
-                  data={alergies.map((alergy) => ({
-                    value: alergy.NAZOV_ALERGIE,
-                    label: alergy.NAZOV_ALERGIE,
-                  }))}
-                  searchable
-                  limit={100}
-                  clearable
-                  maxDropdownHeight={300}
-                  nothingFound="Prázdny zoznam"
-                  {...form1.getInputProps("alergy1")}
-                />
-
-                <Textarea
-                />
-                <Button
-                  /*onClick={sendRecipe}*/
-                  className="w-1/5 m-auto text-xl bg-blue-400 hover:-translate-y-1 hover:shadow-md transition-all duration-300 "
-                  type="submit"
-                >
-                  Odoslať
-                </Button>
-              </form>
-
-
-
-
-            </div>
-          </Tabs.Panel>
-
-
-
-
-          <Tabs.Panel value="Prescription" pt="xs">
-            <div className="RecordsPanel overflow-auto">
-
-            </div>
-          </Tabs.Panel>
-        </Tabs>
-      </div>
+        </div>
     </div>
   );
 }
 
 
 export default Hospitalization;
-
