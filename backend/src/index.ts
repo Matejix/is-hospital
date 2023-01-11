@@ -24,6 +24,8 @@ import scheduleRouter from "./controllers/scheduleController";
 import scheduleAdministrationRouter from "./controllers/scheduleAdministrationController";
 import recipeRouter from "./controllers/recipeController";
 import profileRouter from "./controllers/profileController";
+import employeeService from "./controllers/employeeController";
+
 
 dotenv.config({ path: "../.env" });
 
@@ -70,6 +72,8 @@ app.use("/recipe", recipeRouter);
 app.use("/schedule", scheduleRouter);
 app.use("/scheduleAdministration", scheduleAdministrationRouter);
 app.use("/profile", profileRouter);
+app.use("/employeeservice", employeeService);
+
 
 app.listen(port, () => {
   console.log(`Server listening at http://localhost:${port}`);

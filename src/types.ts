@@ -120,3 +120,21 @@ export interface ProfileInfo {
   EMAIL: string;
   NAZOV: string;
 }
+
+export interface EmployeeInfo {
+  ROD_CISLO: string;
+  TITUL: string;
+  MENO: string;
+  PRIEZVISKO: string;
+  RODNE_PRIEZVISKO: string;
+  ULICA: string;
+  PSC: string;
+  NAZOV_MESTA: string;
+  DAT_OD: Date;
+  DAT_DO: Date;
+  TYP: string;
+  TYP_ZDRAVOTNIKA: string;
+  ID_ZAMESTNANEC: number;
+  TEL: string;
+  EMAIL: string
+}
