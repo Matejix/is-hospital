@@ -24,6 +24,17 @@ hospitalizationController.get("/getDepartments", async (req: Request, res: Respo
   res.json(rows);
 });
 
+hospitalizationController.get("/getReportTypes", async (req: Request, res: Response) => {
+  const connection = await getDBConnection();
+
+  const query = await connection?.execute(
+    `select typ_spravy from is_sprava o fetch first 15 rows only`
+  );
+  var rows = JSON.parse(JSON.stringify(query?.rows));
+  res.json(rows);
+});
+
+
 
 /*hospitalizationRouter.post("/", async (req: Request, res: Response) => {
   const { description, id_employee, id_patient, medicine } = req.body;
