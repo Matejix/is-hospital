@@ -25,6 +25,20 @@ export interface AlergiesData{
   NAZOV_ALERGIE: string;
 }
 
+export interface DiagnosesData{
+  NAZOV: string;
+}
+
+export interface CheckupsData{
+  NAZOV_VYSETRENIA: string;
+}
+
+export interface PerformancesData{
+  NAZOV_VYKONU: string;
+}
+
+
+
 export interface PatientsData {
   MENO: string;
   PRIEZVISKO: string;

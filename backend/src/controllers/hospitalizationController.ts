@@ -34,6 +34,38 @@ hospitalizationController.get("/getReportTypes", async (req: Request, res: Respo
   res.json(rows);
 });
 
+
+hospitalizationController.get("/getDiagnoses", async (req: Request, res: Response) => {
+  const connection = await getDBConnection();
+
+  const query = await connection?.execute(
+    `select nazov from is_diagnoza fetch first 100 rows only`
+  );
+  var rows = JSON.parse(JSON.stringify(query?.rows));
+  res.json(rows);
+});
+
+
+hospitalizationController.get("/getCheckups", async (req: Request, res: Response) => {
+  const connection = await getDBConnection();
+
+  const query = await connection?.execute(
+    `select nazov_vysetrenia from is_vysetrenie fetch first 100 rows only`
+  );
+  var rows = JSON.parse(JSON.stringify(query?.rows));
+  res.json(rows);
+});
+
+hospitalizationController.get("/getPerformances", async (req: Request, res: Response) => {
+  const connection = await getDBConnection();
+
+  const query = await connection?.execute(
+    `select nazov_vykonu from is_vykony fetch first 100 rows only`
+  );
+  var rows = JSON.parse(JSON.stringify(query?.rows));
+  res.json(rows);
+});
+
 hospitalizationController.get("/getAlergies", async (req: Request, res: Response) => {
   const connection = await getDBConnection();
 

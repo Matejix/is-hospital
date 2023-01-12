@@ -11,8 +11,8 @@ import useTokenData from "@/hooks/useTokenData";
 import { DatePicker } from "@mantine/dates";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { DepartmentsData, PatientsData, Report_typeData, AlergiesData } from "@/types";
-
+import { DepartmentsData, PatientsData, Report_typeData, AlergiesData,  DiagnosesData, CheckupsData, PerformancesData} from "@/types";
+import React from "react";
 
 
 
@@ -21,12 +21,16 @@ function Hospitalization() {
   const [departments, setDepartments] = useState<DepartmentsData[]>([]);
   const [reportTypes, setReportTypes] = useState<Report_typeData[]>([]);
   const [alergies, setAlergies] = useState<AlergiesData[]>([]);
-  const [selectedRecord, setSelectedRecord] = useState<String>();
+  const [diagnoses, setDiagnoses] = useState<DiagnosesData[]>([]);
+  const [checkups, setCheckups] = useState<CheckupsData[]>([]);
+  //const [performances, setPerformances] = useState<PerformancesData[]>([]);
 
 
-  const radioHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSelectedRecord(event.target.value);
+  const [status, setStatus] = React.useState(0);
+  const radioHandler = (status : any) => {
+    setStatus(status);
   };
+  
 
 
   const getUsers = () => {
@@ -66,6 +70,29 @@ function Hospitalization() {
       });
   };
 
+  const getDiags = () => {
+    axios
+      .get("http://localhost:3000/hospitalization/getDiagnoses")
+      .then((response: any) => {
+        //console.log(response);
+        setDiagnoses(response.data);
+      });
+  };
+
+  const getChecks = () => {
+    axios
+      .get("http://localhost:3000/hospitalization/getCheckups")
+      .then((response: any) => {
+        //console.log(response);
+        setCheckups(response.data);
+      });
+  };
+
+
+
+
+
+
   /*const sendHospitalization = () => {
     axios
       .post("http://localhost:3000/hospitalization", {
@@ -87,6 +114,8 @@ function Hospitalization() {
       date: new Date(),
       reportType: [],
       alergies: [],
+      diagnoses: [],
+      checkups: [],
       description: "",
     },
     validate: {
@@ -98,6 +127,8 @@ function Hospitalization() {
   useEffect(() => getUsers(), []);
   useEffect(() => getReps(), []);
   useEffect(() => getAlrgs(), []);
+  useEffect(() => getChecks(), []);
+  useEffect(() => getDiags(), []);
 
   useEffect(() => {
     const h1El = document.querySelector("h1");
@@ -134,44 +165,35 @@ function Hospitalization() {
 
 
       <fieldset className="pt-0 m-auto">
-        <p>
+        <p className="pb-8">
           <input
-            type="radio"
-            name="drink"
-            value="Coffee"
-            id="coffee"
-            onChange={radioHandler}
+             type="radio" name="release" checked={status === 1} onClick={(e) => radioHandler(1)} 
           />
-          <label htmlFor="coffee" className="pr-4 pl-1">Coffee</label>
+          <label htmlFor="Sprava" className="pr-6 pl-1 font-bold">Správa</label>
         
 
         
           <input
-            type="radio"
-            name="drink"
-            value="Tea"
-            id="tea"
-            onChange={radioHandler}
+            type="radio" name="release" checked={status === 2} onClick={(e) => radioHandler(2)}
           />
-          <label htmlFor="tea" className="pr-4 pl-1">Green Tea</label>
+          <label htmlFor="Diagnoza" className="pr-6 pl-1 font-bold">Diagnóza</label>
+
+
+          <input
+             type="radio" name="release" checked={status === 3} onClick={(e) => radioHandler(3)} 
+          />
+          <label htmlFor="vysetrenie" className="pr-6 pl-1 font-bold">Vyšetrenie</label>
+
+
+
+          <input
+             type="radio" name="release" checked={status === 4} onClick={(e) => radioHandler(4)} 
+          />
+          <label htmlFor="alergia" className="pr-6 pl-1 font-bold">Alergia</label>
         
 
-        
-          <input
-            type="radio"
-            name="drink"
-            value="Pumpkin Juice"
-            id="pumpkin"
-            onChange={radioHandler}
-          />
-          <label htmlFor="pumpkin" className="pr-4 pl-1">Pumpkin Juice</label>
         </p>
       </fieldset>
-
-      {/* Display the selected drink */}
-      {selectedRecord && <h2>{selectedRecord}</h2>}
-
-
 
                 <div className="flex justify-between mb-9">
                   <TextInput
@@ -206,9 +228,14 @@ function Hospitalization() {
                     nothingFound="Prázdny zoznam"
                     {...form.getInputProps("id_patient")}
                   />
+
+                
+
+
                 </div>
-                <MultiSelect
-                  className="mb-8 pt-4"
+
+                {status === 1 && <MultiSelect
+                  className="mb-8"
                   label="Vyberte typ správy"
                   placeholder="Zvoľte typ správy"
                   data={reportTypes.map((reportType) => ({
@@ -221,10 +248,60 @@ function Hospitalization() {
                   maxDropdownHeight={300}
                   nothingFound="Prázdny zoznam"
                   {...form.getInputProps("reportType")}
-                />
+                />}
+
+                {status === 2 && <MultiSelect
+                  className="mb-8"
+                  label="Vyberte diagnózu"
+                  placeholder="Zvoľte diagnózu"
+                  data={diagnoses.map((diagnose) => ({
+                    value: diagnose.NAZOV,
+                    label: diagnose.NAZOV,
+                  }))}
+                  searchable
+                  limit={100}
+                  clearable
+                  maxDropdownHeight={300}
+                  nothingFound="Prázdny zoznam"
+                  {...form.getInputProps("diagnose")}
+                />}
+
+                  {status === 3 && <MultiSelect
+                  className="mb-8"
+                  label="Vyberte vyšetrenie"
+                  placeholder="Zvoľte vyšetrenie"
+                  data={checkups.map((checkup) => ({
+                    value: checkup.NAZOV_VYSETRENIA,
+                    label: checkup.NAZOV_VYSETRENIA,
+                  }))}
+                  searchable
+                  limit={100}
+                  clearable
+                  maxDropdownHeight={300}
+                  nothingFound="Prázdny zoznam"
+                  {...form.getInputProps("checkup")}
+                />}
+
+                  {status === 4 && <MultiSelect
+                  className="mb-8 "
+                  label="Vyberte typ alergie"
+                  placeholder="Zvoľte typ alergie"
+                  data={alergies.map((alergy) => ({
+                    value: alergy.NAZOV_ALERGIE,
+                    label: alergy.NAZOV_ALERGIE,
+                  }))}
+                  searchable
+                  limit={100}
+                  clearable
+                  maxDropdownHeight={300}
+                  nothingFound="Prázdny zoznam"
+                  {...form.getInputProps("alergy")}
+                />}
+
+                
 
                 <Textarea
-                  className="mb-16 pt-4"
+                  className="mb-16"
                   label="Popis"
                   placeholder="Popis oddelenia"
                   radius="md"
