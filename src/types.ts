@@ -137,4 +137,21 @@ export interface EmployeeInfo {
   ID_ZAMESTNANEC: number;
   TEL: string;
   EMAIL: string
+  NAZOV_ODDELENIA: string;
+  ID_TYPU_ODDELENIA: number;
+  TYP_ZAMESTNANCA: number;
+}
+
+export interface TypesOfEmployees {
+  TYP_ZAMESTNANCA: number;
+  NAZOV: string;
+}
+
+export interface TypesOfMedics {
+  TYP_ZDRAVOTNIKA: string;
+}
+
+export interface TypesOfDepartments {
+  ID_TYPU_ODDELENIA: number;
+  NAZOV_ODDELENIA: string;
 }

@@ -93,7 +93,7 @@ patientServiceRouter.post("/addPatient", async (req: Request, res: Response) => 
   const queryInsuranceID = await connection?.execute(
     `select max(id_poistenia) as id from is_poistenia`
   );
-  if (queryID?.rows != undefined) {
+  if (queryID?.rows != undefined && queryID?.rows.length == 0) {
     const queryPerson = await connection?.execute(
       `insert into is_osoba (rod_cislo, meno, priezvisko, ulica, psc) values (
     '${id}','${name}','${surname}','${street}','${city}')`

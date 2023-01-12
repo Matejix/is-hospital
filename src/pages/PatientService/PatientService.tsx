@@ -201,15 +201,14 @@ function PatientService() {
       .get("http://localhost:3000/patientservice/getInsurances")
       .then((response: any) => {
         insurances = response.data;
-        console.log(insurances);
       });
   };
 
-  const getPatientInfo = () => {
+  const getPatientInfo = (choosen : string) => {
     setLoading(true);
     axios
       .post("http://localhost:3000/patientservice/getBasicInfo", {
-        id: choosenPatient,
+        id: choosen,
       })
       .then((response: any) => {
         console.log(response.data);
@@ -219,12 +218,12 @@ function PatientService() {
       });
   };
 
-  const getPatientRecords = () => {
+  const getPatientRecords = (choosen : string) => {
     setLoading(true);
 
     axios
       .post("http://localhost:3000/patientservice/getListOfRecords", {
-        id: choosenPatient,
+        id: choosen,
       })
       .then((response: any) => {
         setPatientRecords(response.data);
@@ -232,12 +231,12 @@ function PatientService() {
       });
   };
 
-  const getPatientRequests = () => {
+  const getPatientRequests = (choosen : string) => {
     setLoading(true);
 
     axios
       .post("http://localhost:3000/patientservice/getRequests", {
-        id: choosenPatient,
+        id: choosen,
       })
       .then((response: any) => {
         setPatientRequests(response.data);
@@ -245,12 +244,12 @@ function PatientService() {
       });
   };
 
-  const getPatientPrescriptions = () => {
+  const getPatientPrescriptions = (choosen : string) => {
     setLoading(true);
 
     axios
       .post("http://localhost:3000/patientservice/getPrescriptions", {
-        id: choosenPatient,
+        id: choosen,
       })
       .then((response: any) => {
         setPatientPrescriptions(response.data);
@@ -263,12 +262,17 @@ function PatientService() {
     if (patients !== null && sortedData === null && sortBy === null) {
       setSortedData(patients);
       setChoosenPatient(patients[0].ROD_CISLO);
-      getPatientInfo();
-      getPatientRecords();
-      getPatientRequests();
-      getPatientPrescriptions();
+      getPatientInfo(patients[0].ROD_CISLO);
+      getPatientRecords(patients[0].ROD_CISLO);
+      getPatientRequests(patients[0].ROD_CISLO);
+      getPatientPrescriptions(patients[0].ROD_CISLO);
     }
   }, [patients]);
+
+
+  useEffect(() => {
+    console.log(choosenPatient);
+  }, [choosenPatient]);
 
   const setSorting = (field: keyof RowData) => {
     const reversed = field === sortBy ? !reverseSortDirection : false;
@@ -292,13 +296,14 @@ function PatientService() {
   };
 
   const deletePatient = (row: any) => {
-    if(confirm("Naozaj chcete zmazať pacienta? ")){
-    axios.post("http://localhost:3000/patientservice/deletePatient", {
-      id: row
-    }).then((response: any) => {
-      window.location.href = "/patient-service";
+    if (confirm("Naozaj chcete zmazať pacienta? ")) {
+      axios.post("http://localhost:3000/patientservice/deletePatient", {
+        id: row
+      }).then((response: any) => {
+        window.location.href = "/patient-service";
 
-    });}
+      });
+    }
   };
 
   const editPatient = () => {
@@ -316,10 +321,10 @@ function PatientService() {
 
   const choosePerson = (row: RowData) => {
     setChoosenPatient(row.ROD_CISLO);
-    getPatientInfo();
-    getPatientRecords();
-    getPatientRequests();
-    getPatientPrescriptions();
+    getPatientInfo(row.ROD_CISLO);
+    getPatientRecords(row.ROD_CISLO);
+    getPatientRequests(row.ROD_CISLO);
+    getPatientPrescriptions(row.ROD_CISLO);
   };
 
   const form = useForm({
@@ -334,7 +339,7 @@ function PatientService() {
       employment: "",
       street: "",
       city: "",
-      insurance: "",
+      insurance: 0,
       insuranceStart: new Date(),
       insuranceEnd: new Date(),
       title: ""
@@ -346,7 +351,7 @@ function PatientService() {
       street: (value) => (value.length === 0 ? "Zvoľte ulicu" : null),
       bloodtype: (value) => (value.length === 0 ? "Zvoľte krvnú skupinu" : null),
       city: (value) => (value.length === 0 ? "Zvoľte mesto" : null),
-      insurance: (value) => (value.length === 0 ? "Zvoľte poisťovňu" : null),
+      insurance: (value) => (value === 0 ? "Zvoľte poisťovňu" : null),
       birthdate: (value) => (value === null ? "Zvoľte dátum narodenia" : null),
       insuranceStart: (value) => (value === null ? "Zvoľte dátum začiatku poistenia" : null),
       birthsurname: (value) => (new Date(value) > new Date() ? "Zvoľte správny dátum úmrtia" : null),
@@ -359,28 +364,26 @@ function PatientService() {
       var deathdate = '';
       var insuranceEnd = '';
       var insuranceStart = '';
-      var insurance = '';
-  
-     
-      if (form.values.insurance != basicInfo.ID_POISTOVNA.toString()){
+      var insurance = 0;
+
+
+      if (form.values.insurance != basicInfo.ID_POISTOVNA) {
         insurance = form.values.insurance;
         var start = new Date(form.values.insuranceStart);
         insuranceStart = start.getDate() + "." + (start.getUTCMonth() + 1) + "." + start.getFullYear();
         var end = new Date(form.values.insuranceEnd);
         insuranceEnd = end.getDate() + "." + (end.getUTCMonth() + 1) + "." + end.getFullYear();
       }
-      if (form.values.insuranceEnd && form.values.insuranceEnd != new Date(basicInfo.DAT_OD))
-      {
-          var end = new Date(form.values.insuranceEnd);
-          insuranceEnd = end.getDate() + "." + (end.getUTCMonth() + 1) + "." + end.getFullYear();
+      if (form.values.insuranceEnd && form.values.insuranceEnd != new Date(basicInfo.DAT_OD)) {
+        var end = new Date(form.values.insuranceEnd);
+        insuranceEnd = end.getDate() + "." + (end.getUTCMonth() + 1) + "." + end.getFullYear();
       }
-      if (form.values.deathdate && form.values.deathdate != new Date(basicInfo.DATUM_UMRTIA))
-      {
-          var end = new Date(form.values.deathdate);
-          deathdate = end.getDate() + "." + (end.getUTCMonth() + 1) + "." + end.getFullYear();
+      if (form.values.deathdate && form.values.deathdate != new Date(basicInfo.DATUM_UMRTIA)) {
+        var end = new Date(form.values.deathdate);
+        deathdate = end.getDate() + "." + (end.getUTCMonth() + 1) + "." + end.getFullYear();
       }
 
-      
+
       axios.post("http://localhost:3000/patientService/editPatient", {
         id: form.values.id,
         name: form.values.name,
@@ -401,8 +404,8 @@ function PatientService() {
         setOpened(false);
         form.reset();
         console.log(response.data.message);
-       
-        getPatientInfo();
+
+        getPatientInfo(basicInfo.ROD_CISLO);
         console.log(basicInfo);
         toast.success(response.data.message, {
           position: "top-right",
@@ -415,7 +418,7 @@ function PatientService() {
           theme: "light",
         });
       });
-      
+
 
 
     } else {
@@ -451,6 +454,19 @@ function PatientService() {
         title: form.values.title,
       }).then((response: any) => {
         form.reset();
+        setOpened(false);
+      }).catch((err) => {
+        console.log(err);
+        toast.warn(err.response.data.message, {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
       });
     }
 
@@ -476,7 +492,7 @@ function PatientService() {
   };
 
   const rows = sortedData?.map((row: any) => (
-    <tr key={row.ROD_CISLO}>
+    <tr key={row.ROD_CISLO} onClick={() => choosePerson(row)}>
       <td onClick={() => choosePerson(row)}>{row.CELE_MENO}</td>
       <td onClick={() => choosePerson(row)}>{row.ROD_CISLO}</td>
       <td>
@@ -597,8 +613,10 @@ function PatientService() {
           <Modal
             opened={opened}
             onClose={() => {
+              form.reset();
               setOpened(false);
-              setEditing(false)
+              setEditing(false);
+              
             }}
             size='lg'
           >
@@ -643,10 +661,9 @@ function PatientService() {
                   />
 
                   <DatePicker
-                    withAsterisk
                     radius="lg"
                     label="Dátum narodenia"
-                    disabled={editing ? true : false}
+                    disabled={true}
                     locale="sk"
                     {...form.getInputProps("birthdate")}
                   />
@@ -906,17 +923,17 @@ function PatientService() {
               </div>
             </div>
             <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        hideProgressBar
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-      />
+              position="top-right"
+              autoClose={3000}
+              hideProgressBar
+              newestOnTop={false}
+              closeOnClick
+              rtl={false}
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover
+              theme="light"
+            />
             <div>
               <Tabs defaultValue="Records">
                 <Tabs.List className=" px-6 bg-slate-100	  ">
