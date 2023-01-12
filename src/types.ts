@@ -23,14 +23,17 @@ export interface Report_typeData{
 }
 
 export interface AlergiesData{
+  ID_ALERGIA: string;
   NAZOV_ALERGIE: string;
 }
 
 export interface DiagnosesData{
+  KOD_DIAGNOZY: string;
   NAZOV: string;
 }
 
 export interface CheckupsData{
+  ID_VYSETRENIE: string;
   NAZOV_VYSETRENIA: string;
 }
 
