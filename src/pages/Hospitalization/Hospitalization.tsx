@@ -13,6 +13,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { DepartmentsData, PatientsData, Report_typeData, AlergiesData,  DiagnosesData, CheckupsData, PerformancesData} from "@/types";
 import React from "react";
+import { format } from 'date-fns';
 
 
 
@@ -156,7 +157,7 @@ function Hospitalization() {
     initialValues: {
       id_employee: datas.id_employee,
       id_patient: "",
-      date: new Date(),
+      date: format(new Date(), 'dd.mm.yy'),
       reportType: "",
       alergy: "",
       diagnose: "",
