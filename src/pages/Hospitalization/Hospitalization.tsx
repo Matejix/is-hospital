@@ -93,18 +93,63 @@ function Hospitalization() {
 
 
 
-  /*const sendHospitalization = () => {
+  const sendReport = () => {
     axios
-      .post("http://localhost:3000/hospitalization", {
+      .post("http://localhost:3000/hospitalization/postReport", {
         description: form.values.description,
         id_employee: form.values.id_employee,
         id_patient: form.values.id_patient,
-        department: form.values.department,
+        date: form.values.date,
+        reportType : form.values.reportType,
       })
       .then(() => {
         window.location.href = "/";
       });
-  };*/
+  };
+
+
+  const sendAlergy = () => {
+    axios
+      .post("http://localhost:3000/hospitalization/postAlergy", {
+        description: form.values.description,
+        id_employee: form.values.id_employee,
+        id_patient: form.values.id_patient,
+        date: form.values.date,
+        alergy : form.values.alergy,
+      })
+      .then(() => {
+        window.location.href = "/";
+      });
+  };
+
+
+  const sendCheckup = () => {
+    axios
+      .post("http://localhost:3000/hospitalization/postAlergy", {
+        description: form.values.description,
+        id_employee: form.values.id_employee,
+        id_patient: form.values.id_patient,
+        date: form.values.date,
+        checkup : form.values.checkup,
+      })
+      .then(() => {
+        window.location.href = "/";
+      });
+  };
+
+  const sendDiagnosis = () => {
+    axios
+      .post("http://localhost:3000/hospitalization/postDiagnosis", {
+        description: form.values.description,
+        id_employee: form.values.id_employee,
+        id_patient: form.values.id_patient,
+        date: form.values.date,
+        diagnose : form.values.diagnose,
+      })
+      .then(() => {
+        window.location.href = "/";
+      });
+  };
 
   const datas = useTokenData();
   const form = useForm({
@@ -112,10 +157,10 @@ function Hospitalization() {
       id_employee: datas.id_employee,
       id_patient: "",
       date: new Date(),
-      reportType: [],
-      alergies: [],
-      diagnoses: [],
-      checkups: [],
+      reportType: "",
+      alergy: "",
+      diagnose: "",
+      checkup: "",
       description: "",
     },
     validate: {
@@ -234,13 +279,13 @@ function Hospitalization() {
 
                 </div>
 
-                {status === 1 && <MultiSelect
+                {status === 1 && <Select
                   className="mb-8"
                   label="Vyberte typ správy"
                   placeholder="Zvoľte typ správy"
                   data={reportTypes.map((reportType) => ({
-                    value: reportType.TYP_SPRAVY,
-                    label: reportType.TYP_SPRAVY,
+                    value: reportType.ID_SPRAVA,
+                    label:  reportType.ID_SPRAVA + " " + reportType.TYP_SPRAVY,
                   }))}
                   searchable
                   limit={100}
@@ -250,7 +295,7 @@ function Hospitalization() {
                   {...form.getInputProps("reportType")}
                 />}
 
-                {status === 2 && <MultiSelect
+                {status === 2 && <Select
                   className="mb-8"
                   label="Vyberte diagnózu"
                   placeholder="Zvoľte diagnózu"
@@ -266,7 +311,7 @@ function Hospitalization() {
                   {...form.getInputProps("diagnose")}
                 />}
 
-                  {status === 3 && <MultiSelect
+                  {status === 3 && <Select
                   className="mb-8"
                   label="Vyberte vyšetrenie"
                   placeholder="Zvoľte vyšetrenie"
@@ -282,7 +327,7 @@ function Hospitalization() {
                   {...form.getInputProps("checkup")}
                 />}
 
-                  {status === 4 && <MultiSelect
+                  {status === 4 && <Select
                   className="mb-8 "
                   label="Vyberte typ alergie"
                   placeholder="Zvoľte typ alergie"
@@ -307,13 +352,43 @@ function Hospitalization() {
                   radius="md"
                   {...form.getInputProps("description")}
                 />
-                <Button
-                  /*onClick={sendRecipe}*/
+
+                {status === 1  && 
+                <Button 
+                  onClick={sendReport}
                   className="w-1/5 m-auto text-xl bg-blue-400 hover:-translate-y-1 hover:shadow-md transition-all duration-300 "
                   type="submit"
                 >
                   Odoslať
-                </Button>
+                </Button>}
+
+                {status === 2  && 
+                <Button 
+                  onClick={sendDiagnosis}
+                  className="w-1/5 m-auto text-xl bg-blue-400 hover:-translate-y-1 hover:shadow-md transition-all duration-300 "
+                  type="submit"
+                >
+                  Odoslať
+                </Button>}
+
+                {status === 3  && 
+                <Button 
+                  onClick={sendCheckup}
+                  className="w-1/5 m-auto text-xl bg-blue-400 hover:-translate-y-1 hover:shadow-md transition-all duration-300 "
+                  type="submit"
+                >
+                  Odoslať
+                </Button>}
+
+                {status === 4  && 
+                <Button 
+                  onClick={sendAlergy}
+                  className="w-1/5 m-auto text-xl bg-blue-400 hover:-translate-y-1 hover:shadow-md transition-all duration-300 "
+                  type="submit"
+                >
+                  Odoslať
+                </Button>}
+                
               </form>
 
               

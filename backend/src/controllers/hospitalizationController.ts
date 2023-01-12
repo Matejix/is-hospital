@@ -1,19 +1,19 @@
 import getDBConnection from "../database";
 import express, { Request, Response } from "express";
-const hospitalizationController = express.Router();
+const hospitalizationRouter = express.Router();
 
-hospitalizationController.get("/getPatients", async (req: Request, res: Response) => {
+hospitalizationRouter.get("/getPatients", async (req: Request, res: Response) => {
     const connection = await getDBConnection();
 
     const query = await connection?.execute(
       `select meno, priezvisko, rod_cislo, ulica, nazov_mesta, nazov from is_pacient join is_osoba using (rod_cislo)
-       join is_mesto using (psc) join is_poistenia using(rod_cislo) join is_poistovna using(id_poistovna) fetch first 1000 rows only`
+       join is_mesto using (psc) join is_poistenia using(rod_cislo) join is_poistovna using(id_poistovna) fetch first 100 rows only`
     );
     var rows = JSON.parse(JSON.stringify(query?.rows));
     res.json(rows);
 });
 
-hospitalizationController.get("/getDepartments", async (req: Request, res: Response) => {
+hospitalizationRouter.get("/getDepartments", async (req: Request, res: Response) => {
   const connection = await getDBConnection();
 
   const query = await connection?.execute(
@@ -24,18 +24,18 @@ hospitalizationController.get("/getDepartments", async (req: Request, res: Respo
   res.json(rows);
 });
 
-hospitalizationController.get("/getReportTypes", async (req: Request, res: Response) => {
+hospitalizationRouter.get("/getReportTypes", async (req: Request, res: Response) => {
   const connection = await getDBConnection();
 
   const query = await connection?.execute(
-    `select typ_spravy from is_sprava o fetch first 15 rows only`
+    `select id_sprava, typ_spravy from is_sprava o fetch first 15 rows only`
   );
   var rows = JSON.parse(JSON.stringify(query?.rows));
   res.json(rows);
 });
 
 
-hospitalizationController.get("/getDiagnoses", async (req: Request, res: Response) => {
+hospitalizationRouter.get("/getDiagnoses", async (req: Request, res: Response) => {
   const connection = await getDBConnection();
 
   const query = await connection?.execute(
@@ -46,7 +46,7 @@ hospitalizationController.get("/getDiagnoses", async (req: Request, res: Respons
 });
 
 
-hospitalizationController.get("/getCheckups", async (req: Request, res: Response) => {
+hospitalizationRouter.get("/getCheckups", async (req: Request, res: Response) => {
   const connection = await getDBConnection();
 
   const query = await connection?.execute(
@@ -56,7 +56,7 @@ hospitalizationController.get("/getCheckups", async (req: Request, res: Response
   res.json(rows);
 });
 
-hospitalizationController.get("/getPerformances", async (req: Request, res: Response) => {
+hospitalizationRouter.get("/getPerformances", async (req: Request, res: Response) => {
   const connection = await getDBConnection();
 
   const query = await connection?.execute(
@@ -66,7 +66,7 @@ hospitalizationController.get("/getPerformances", async (req: Request, res: Resp
   res.json(rows);
 });
 
-hospitalizationController.get("/getAlergies", async (req: Request, res: Response) => {
+hospitalizationRouter.get("/getAlergies", async (req: Request, res: Response) => {
   const connection = await getDBConnection();
 
   const query = await connection?.execute(
@@ -78,21 +78,50 @@ hospitalizationController.get("/getAlergies", async (req: Request, res: Response
 
 
 
-/*hospitalizationRouter.post("/", async (req: Request, res: Response) => {
-  const { description, id_employee, id_patient, medicine } = req.body;
-  console.log(description, id_employee, id_patient, medicine);
+hospitalizationRouter.post("/postReport", async (req: Request, res: Response) => {
+  const { description, id_employee, id_patient, date, reportType } = req.body;
+  console.log(description, id_employee, id_patient, date, reportType);
 
   const connection = await getDBConnection();
   const query = await connection?.execute(
-    `insert into is_zaznam (id_zaznam,datum_zaznamu,popis,id_sprava,id_zamestnanec) values ((select max(id_zaznam) + 1 from id_zaznam), '${description}', '${id_patient}', ${id_employee})
-     join is_zdravotna_karta usingwhere id_pacient = `
-  );
-  console.log(query);
-  medicine.map((medicament: any) => {
-    connection?.execute(
-      `insert into is_predpisane_lieky (id_predpisu,id_kod_lieku) values ((select max(id_predpisu) from is_predpis), '${medicament}')`
-    );
-  });
-});*/
+    `insert into is_zaznam (id_zaznam,datum_zaznamu,popis,rod_cislo,id_zamestnanec, id_sprava) values ((select max(id_zaznam) + 1 from is_zaznamy),
+     ${date}, '${description}', '${id_patient}', ${id_employee}, '${reportType}')`);     
+});
 
-export default hospitalizationController;
+
+hospitalizationRouter.post("/postAlergy", async (req: Request, res: Response) => {
+  const { description, id_employee, id_patient, date, alergy } = req.body;
+  console.log(description, id_employee, id_patient, date, alergy);
+
+  const connection = await getDBConnection();
+  const query = await connection?.execute(
+    `insert into is_zaznam (id_zaznam,datum_zaznamu,popis,rod_cislo,id_zamestnanec, id_alergia) values ((select max(id_zaznam) + 1 from is_zaznamy),
+     ${date}, '${description}', '${id_patient}', ${id_employee}, select id_alergia from is_alergie where nazov_alergie = '${alergy}'`);    
+});
+
+hospitalizationRouter.post("/postCheckup", async (req: Request, res: Response) => {
+  const { description, id_employee, id_patient, date, checkup } = req.body;
+  console.log(description, id_employee, id_patient, date, checkup);
+
+  const connection = await getDBConnection();
+  const query = await connection?.execute(
+    `insert into is_zaznam (id_zaznam,datum_zaznamu,popis,rod_cislo,id_zamestnanec, id_vysetrenie) values ((select max(id_zaznam) + 1 from is_zaznamy),
+     ${date}, '${description}', '${id_patient}', ${id_employee}, select id_vysetrenie from is_vysetrenie where nazov_vysetrenia = '${checkup}'`);
+     
+     
+});
+
+hospitalizationRouter.post("/postDiagnosis", async (req: Request, res: Response) => {
+  const { description, id_employee, id_patient, date, diagnose } = req.body;
+  console.log(description, id_employee, id_patient, date, diagnose);
+
+  const connection = await getDBConnection();
+  const query = await connection?.execute(
+    `insert into is_zaznam (id_zaznam,datum_zaznamu,popis,rod_cislo,id_zamestnanec, kod_diagnozy) values ((select max(id_zaznam) + 1 from is_zaznamy),
+     ${date}, '${description}', '${id_patient}', ${id_employee}, select kod_diagnozy from is_diagnoza where nazov = '${diagnose}'`);
+     
+     
+});
+
+
+export default hospitalizationRouter;

@@ -18,6 +18,7 @@ export interface DepartmentsData{
 }
 
 export interface Report_typeData{
+  ID_SPRAVA: string;
   TYP_SPRAVY: string;
 }
 
