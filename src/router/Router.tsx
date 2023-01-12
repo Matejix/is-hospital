@@ -32,6 +32,7 @@ import Report12 from "@/pages/Reports/Report12";
 import Menu from "@/components/Menu";
 import Login from "@/components/Login";
 import Bubble from "@/components/CornerBubbles";
+import ScheduleAdministration from "@/pages/ScheduleAdministration";
 import AuthGate from "./AuthGate";
 
 const router = createBrowserRouter([
@@ -78,6 +79,10 @@ const router = createBrowserRouter([
       {
         path: "schedule",
         element: <Schedule />,
+      },
+      {
+        path: "scheduleAdministration",
+        element: <ScheduleAdministration />,
       },
       {
         path: "hospitalization",

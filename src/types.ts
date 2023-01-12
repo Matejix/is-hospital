@@ -66,6 +66,10 @@ export interface BasicInfo {
   KRVNA_SKUPINA: string;
   ZAMESTNANIE: string;
   POISTOVNA: string;
+  ID_POISTOVNA: number;
+  DAT_OD: Date;
+  DAT_DO: Date;
+  ID_POISTENIA: number;
 }
 
 export interface Records {
@@ -98,6 +102,44 @@ export interface Prescriptions {
   };
 }
 
+export interface ScheduleDate{
+  ODDELENIE: string,
+  DAT_OD: Date;
+  DAT_DO: Date;
+}
+
+export interface ScheduleEmployeeDate{
+  ID_DOCHADZKY: number;
+  ID_ZAMESTNANEC: number;
+  CELE_MENO: string;
+  ODDELENIE: string,
+  DAT_OD: Date;
+  DAT_DO: Date;
+}
+
+export interface Dates{
+  DAT: Date;
+}
+
+export interface Cities{
+  NAZOV_MESTA: string;
+  PSC: string;
+}
+
+export interface BloodTypes{
+  KRVNA_SKUPINA: string;
+}
+
+export interface Insurance{
+  ID_POISTOVNA: number;
+  NAZOV: string;
+}
+
+export interface EmployeeNames{
+  ID_ZAMESTNANEC: number;
+  CELE_MENO: string;
+}
+
 export interface ProfileInfo {
   FOTOGRAFIA: Buffer;
   CELE_MENO: string;
@@ -105,4 +147,39 @@ export interface ProfileInfo {
   TEL: string;
   EMAIL: string;
   NAZOV: string;
+}
+
+export interface EmployeeInfo {
+  ROD_CISLO: string;
+  TITUL: string;
+  MENO: string;
+  PRIEZVISKO: string;
+  RODNE_PRIEZVISKO: string;
+  ULICA: string;
+  PSC: string;
+  NAZOV_MESTA: string;
+  DAT_OD: Date;
+  DAT_DO: Date;
+  TYP: string;
+  TYP_ZDRAVOTNIKA: string;
+  ID_ZAMESTNANEC: number;
+  TEL: string;
+  EMAIL: string
+  NAZOV_ODDELENIA: string;
+  ID_TYPU_ODDELENIA: number;
+  TYP_ZAMESTNANCA: number;
+}
+
+export interface TypesOfEmployees {
+  TYP_ZAMESTNANCA: number;
+  NAZOV: string;
+}
+
+export interface TypesOfMedics {
+  TYP_ZDRAVOTNIKA: string;
+}
+
+export interface TypesOfDepartments {
+  ID_TYPU_ODDELENIA: number;
+  NAZOV_ODDELENIA: string;
 }
