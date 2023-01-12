@@ -60,7 +60,7 @@ hospitalizationRouter.get("/getPerformances", async (req: Request, res: Response
   const connection = await getDBConnection();
 
   const query = await connection?.execute(
-    `select nazov_vykonu from is_vykony fetch first 100 rows only`
+    `select  nazov_vykonu from is_vykony fetch first 100 rows only`
   );
   var rows = JSON.parse(JSON.stringify(query?.rows));
   res.json(rows);

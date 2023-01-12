@@ -14,6 +14,7 @@ import { useEffect, useState } from "react";
 import { DepartmentsData, PatientsData, Report_typeData, AlergiesData,  DiagnosesData, CheckupsData, PerformancesData} from "@/types";
 import React from "react";
 import { format } from 'date-fns';
+import Moment from 'moment';
 
 
 
@@ -109,7 +110,7 @@ function Hospitalization() {
   };
 
 
-  const sendAlergy = () => {
+  /*const sendAlergy = () => {
     axios
       .post("http://localhost:3000/hospitalization/postAlergy", {
         description: form.values.description,
@@ -150,14 +151,14 @@ function Hospitalization() {
       .then(() => {
         window.location.href = "/";
       });
-  };
+  };*/
 
   const datas = useTokenData();
   const form = useForm({
     initialValues: {
       id_employee: datas.id_employee,
       id_patient: "",
-      date: format(new Date(), 'dd/mm/yyyy'),
+      date: Moment().format('DD-MM-YYYY'),
       reportType: "",
       alergy: "",
       diagnose: "",
@@ -352,7 +353,7 @@ function Hospitalization() {
                 <Textarea
                   className="mb-16"
                   label="Popis"
-                  placeholder="Popis oddelenia"
+                  placeholder="Popis"
                   radius="md"
                   {...form.getInputProps("description")}
                 />
@@ -368,7 +369,7 @@ function Hospitalization() {
 
                 {status === 2  && 
                 <Button 
-                  onClick={sendDiagnosis}
+                  /*onClick={sendDiagnosis}*/
                   className="w-1/5 m-auto text-xl bg-blue-400 hover:-translate-y-1 hover:shadow-md transition-all duration-300 "
                   type="submit"
                 >
@@ -377,7 +378,7 @@ function Hospitalization() {
 
                 {status === 3  && 
                 <Button 
-                  onClick={sendCheckup}
+                  /*onClick={sendCheckup}*/
                   className="w-1/5 m-auto text-xl bg-blue-400 hover:-translate-y-1 hover:shadow-md transition-all duration-300 "
                   type="submit"
                 >
@@ -386,7 +387,7 @@ function Hospitalization() {
 
                 {status === 4  && 
                 <Button 
-                  onClick={sendAlergy}
+                  /*onClick={sendAlergy}*/
                   className="w-1/5 m-auto text-xl bg-blue-400 hover:-translate-y-1 hover:shadow-md transition-all duration-300 "
                   type="submit"
                 >
