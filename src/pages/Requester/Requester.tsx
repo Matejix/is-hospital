@@ -102,25 +102,25 @@ function Requester() {
             {...form.getInputProps("date")}
           />
 
-          <Select
-            className="basis-1/2"
-            withAsterisk
-            label="Vyberte pacienta"
-            placeholder="Zvoľte jedného pacienta"
-            data={patients.map((patient) => ({
-              value: patient.ROD_CISLO,
-              label:
-                patient.ROD_CISLO +
-                " " +
-                patient.MENO +
-                " " +
-                patient.PRIEZVISKO,
-            }))}
-            searchable
-            maxDropdownHeight={400}
-            nothingFound="Prázdny zoznam"
-            {...form.getInputProps("id_patient")}
-          />
+                  <Select
+                    className="basis-1/2"
+                    withAsterisk
+                    label="Vyberte pacienta"
+                    placeholder="Zvoľte jedného pacienta"
+                    data={patients.map((patient) => ({
+                      value: patient.ROD_CISLO,
+                      label:
+                        patient.ROD_CISLO +
+                        " " +
+                        patient.MENO +
+                        " " +
+                        patient.PRIEZVISKO,
+                    }))}
+                    searchable
+                    maxDropdownHeight={400}
+                    nothingFound="Prázdny zoznam"
+                    {...form.getInputProps("id_patient")}
+                  />
         </div>
         <Select
           className="mb-8"
