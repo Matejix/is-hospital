@@ -85,7 +85,7 @@ hospitalizationRouter.post("/postReport", async (req: Request, res: Response) =>
   const connection = await getDBConnection();
   const query = await connection?.execute(
     `insert into is_zaznamy (id_zaznam,datum_zaznamu,popis,rod_cislo,id_zamestnanec, id_sprava) values ((select max(id_zaznam) + 1 from is_zaznamy), 
-    to_date('12.01.2022','DD.MM.YYYY'), '${description}', '${id_patient}', ${id_employee}, '${reportType}')`);     
+    to_date('13.01.2023','DD.MM.YYYY'), '${description}', '${id_patient}', ${id_employee}, '${reportType}')`);     
 });
 
 

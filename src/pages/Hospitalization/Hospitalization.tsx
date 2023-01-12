@@ -14,7 +14,7 @@ import { useEffect, useState } from "react";
 import { DepartmentsData, PatientsData, Report_typeData, AlergiesData,  DiagnosesData, CheckupsData, PerformancesData} from "@/types";
 import React from "react";
 import { format } from 'date-fns';
-import Moment from 'moment';
+
 
 
 
@@ -158,7 +158,7 @@ function Hospitalization() {
     initialValues: {
       id_employee: datas.id_employee,
       id_patient: "",
-      date: Moment().format('DD-MM-YYYY'),
+      date: new Date(),
       reportType: "",
       alergy: "",
       diagnose: "",
@@ -256,8 +256,11 @@ function Hospitalization() {
                     className="basis-1/4"
                     withAsterisk
                     label="Dátum"
+                    
                     {...form.getInputProps("date")}
+                    
                   />
+                   
 
                   <Select
                     className="basis-1/2"

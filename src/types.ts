@@ -87,14 +87,7 @@ export interface Records {
   ODDELENIE: string;
 }
 
-export interface Requests {
-  ID_ZIADANKY: string;
-  DAT_VYSTAVENIA: Date;
-  POPIS: string;
-  NAZOV_DIAGNOZY: string;
-  VYSTAVIL: string;
-  ODDELENIE: string;
-}
+
 
 export interface Prescriptions {
   PREDPISY: {
