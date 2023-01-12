@@ -157,7 +157,7 @@ function Hospitalization() {
     initialValues: {
       id_employee: datas.id_employee,
       id_patient: "",
-      date: format(new Date(), 'dd.mm.yy'),
+      date: format(new Date(), 'dd/mm/yyyy'),
       reportType: "",
       alergy: "",
       diagnose: "",
@@ -186,6 +186,9 @@ function Hospitalization() {
       formEl?.classList.replace("translate-y-16", "translate-y-0");
     }, 500);
   }, []);
+
+
+  
 
 
   return (
@@ -286,7 +289,7 @@ function Hospitalization() {
                   placeholder="Zvoľte typ správy"
                   data={reportTypes.map((reportType) => ({
                     value: reportType.ID_SPRAVA,
-                    label:  reportType.ID_SPRAVA + " " + reportType.TYP_SPRAVY,
+                    label: reportType.TYP_SPRAVY,
                   }))}
                   searchable
                   limit={100}
@@ -301,7 +304,7 @@ function Hospitalization() {
                   label="Vyberte diagnózu"
                   placeholder="Zvoľte diagnózu"
                   data={diagnoses.map((diagnose) => ({
-                    value: diagnose.NAZOV,
+                    value: diagnose.KOD_DIAGNOZY,
                     label: diagnose.NAZOV,
                   }))}
                   searchable
@@ -317,7 +320,7 @@ function Hospitalization() {
                   label="Vyberte vyšetrenie"
                   placeholder="Zvoľte vyšetrenie"
                   data={checkups.map((checkup) => ({
-                    value: checkup.NAZOV_VYSETRENIA,
+                    value: checkup.ID_VYSETRENIE,
                     label: checkup.NAZOV_VYSETRENIA,
                   }))}
                   searchable
@@ -333,7 +336,7 @@ function Hospitalization() {
                   label="Vyberte typ alergie"
                   placeholder="Zvoľte typ alergie"
                   data={alergies.map((alergy) => ({
-                    value: alergy.NAZOV_ALERGIE,
+                    value: alergy.ID_ALERGIA,
                     label: alergy.NAZOV_ALERGIE,
                   }))}
                   searchable
