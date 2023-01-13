@@ -1,15 +1,10 @@
-import {
-  Button,
-  Select,
-  Textarea,
-  TextInput,
-} from "@mantine/core";
+import { Button, Select, Textarea, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import useTokenData from "@/hooks/useTokenData";
 import { DatePicker } from "@mantine/dates";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { PatientsData, DepartmentsData} from "@/types";
+import { PatientsData, DepartmentsData } from "@/types";
 import { useLocation } from "react-router";
 
 function Requester() {
@@ -27,22 +22,29 @@ function Requester() {
       });
   };
 
- const getDepartment = () => {
-   axios
-     .get("http://localhost:3000/requester/getDepartment")
-     .then((response: any) => {
-      //console.log(response);
-       setDepartments(response.data);
-     });
- };
+  const getDepartment = () => {
+    axios
+      .get("http://localhost:3000/requester/getDepartment")
+      .then((response: any) => {
+        //console.log(response);
+        setDepartments(response.data);
+      });
+  };
 
   const sendRequester = () => {
+    let datum =
+      form.values.date.getDate() +
+      "." +
+      (form.values.date.getUTCMonth() + 1) +
+      "." +
+      form.values.date.getFullYear();
     axios
       .post("http://localhost:3000/requester", {
         description: form.values.description,
         id_employee: form.values.id_employee,
         id_patient: form.values.id_patient,
         department: form.values.department,
+        date: datum,
       })
       .then(() => {
         window.location.href = "/";
@@ -70,7 +72,7 @@ function Requester() {
     const h1El = document.querySelector("h1");
     const formEl = document.querySelector("form");
     setTimeout(() => {
-      h1El?.classList.replace("opacity-0", "opacity-100"); 
+      h1El?.classList.replace("opacity-0", "opacity-100");
       h1El?.classList.replace("-translate-y-16", "-translate-y-0");
       formEl?.classList.replace("opacity-0", "opacity-100");
       formEl?.classList.replace("translate-y-16", "translate-y-0");
@@ -102,25 +104,25 @@ function Requester() {
             {...form.getInputProps("date")}
           />
 
-                  <Select
-                    className="basis-1/2"
-                    withAsterisk
-                    label="Vyberte pacienta"
-                    placeholder="Zvoľte jedného pacienta"
-                    data={patients.map((patient) => ({
-                      value: patient.ROD_CISLO,
-                      label:
-                        patient.ROD_CISLO +
-                        " " +
-                        patient.MENO +
-                        " " +
-                        patient.PRIEZVISKO,
-                    }))}
-                    searchable
-                    maxDropdownHeight={400}
-                    nothingFound="Prázdny zoznam"
-                    {...form.getInputProps("id_patient")}
-                  />
+          <Select
+            className="basis-1/2"
+            withAsterisk
+            label="Vyberte pacienta"
+            placeholder="Zvoľte jedného pacienta"
+            data={patients.map((patient) => ({
+              value: patient.ROD_CISLO,
+              label:
+                patient.ROD_CISLO +
+                " " +
+                patient.MENO +
+                " " +
+                patient.PRIEZVISKO,
+            }))}
+            searchable
+            maxDropdownHeight={400}
+            nothingFound="Prázdny zoznam"
+            {...form.getInputProps("id_patient")}
+          />
         </div>
         <Select
           className="mb-8"

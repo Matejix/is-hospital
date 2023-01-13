@@ -5,7 +5,7 @@ const recipeRouter = express.Router();
 recipeRouter.get("/getPatients", async (req: Request, res: Response) => {
   const connection = await getDBConnection();
   const query = await connection?.execute(
-    `select meno, priezvisko, rod_cislo from is_pacient join is_osoba using (rod_cislo)`
+    `select meno, priezvisko, rod_cislo from is_pacient join is_osoba using (rod_cislo) fetch first 1000 rows only`
   );
   var rows = JSON.parse(JSON.stringify(query?.rows));
   res.json(rows);

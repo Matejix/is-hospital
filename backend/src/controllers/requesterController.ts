@@ -12,23 +12,21 @@ requesterRouter.get("/getPatients", async (req: Request, res: Response) => {
 });
 
 requesterRouter.get("/getDepartment", async (req: Request, res: Response) => {
- const connection = await getDBConnection();
- const query = await connection?.execute(
-   `select k.informacie_oddelenia.nazov_oddelenia as "NAZOV" from is_typ_oddelenia k`
- );
- var rows = JSON.parse(JSON.stringify(query?.rows));
- res.json(rows);
+  const connection = await getDBConnection();
+  const query = await connection?.execute(
+    `select k.informacie_oddelenia.nazov_oddelenia as "NAZOV" from is_typ_oddelenia k`
+  );
+  var rows = JSON.parse(JSON.stringify(query?.rows));
+  res.json(rows);
 });
 
 requesterRouter.post("/", async (req: Request, res: Response) => {
-  const { description, id_employee, id_patient, department, date} = req.body;
-  
+  const { description, id_employee, id_patient, department, date } = req.body;
 
   const connection = await getDBConnection();
   const query = await connection?.execute(
-    `insert into is_ziadanky (id_ziadanky, popis, rod_cislo, id_zamestnanec, id_typu_oddelenia, dat_vystavenia) values ((select max(id_ziadanky) + 1 from is_ziadanky), '${description}', '${id_patient}', ${id_employee}, '${department}', '${date}')`
+    `insert into is_ziadanky (id_ziadanky, popis, rod_cislo, id_zamestnanec, id_typu_oddelenia, dat_vystavenia) values ((select max(id_ziadanky) + 1 from is_ziadanky), '${description}', '${id_patient}', ${id_employee}, '${department}', to_date('${date}', 'DD.MM.YYYY'))`
   );
-  
 });
 
 export default requesterRouter;
