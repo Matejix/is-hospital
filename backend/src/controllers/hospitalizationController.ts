@@ -120,6 +120,8 @@ hospitalizationRouter.post(
       `insert into is_zaznamy (id_zaznam,datum_zaznamu,popis,rod_cislo,id_zamestnanec, id_alergia) values ((select max(id_zaznam) + 1 from is_zaznamy),
     to_date('${date}','DD.MM.YYYY'), '${description}', '${id_patient}', ${id_employee}, '${alergy}')`
     );
+
+    res.status(200).json({ message: "Success" });
   }
 );
 
@@ -134,6 +136,7 @@ hospitalizationRouter.post(
       `insert into is_zaznamy (id_zaznam,datum_zaznamu,popis,rod_cislo,id_zamestnanec, id_vysetrenie) values ((select max(id_zaznam) + 1 from is_zaznamy),
     to_date('${date}','DD.MM.YYYY'), '${description}', '${id_patient}', ${id_employee}, '${checkup}')`
     );
+    res.status(200).json({ message: "Success" });
   }
 );
 
@@ -148,6 +151,7 @@ hospitalizationRouter.post(
       `insert into is_zaznamy (id_zaznam,datum_zaznamu,popis,rod_cislo,id_zamestnanec, kod_diagnozy) values ((select max(id_zaznam) + 1 from is_zaznamy),
     to_date('${date}','DD.MM.YYYY'), '${description}', '${id_patient}', ${id_employee},'${diagnose}')`
     );
+    res.status(200).json({ message: "Success" });
   }
 );
 

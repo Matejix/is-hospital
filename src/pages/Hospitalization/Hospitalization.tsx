@@ -128,7 +128,8 @@ function Hospitalization() {
         alergy: form.values.alergy,
       })
       .then(() => {
-        window.location.href = "/";
+        form.reset();
+        // window.location.href = "/";
       });
   };
 
@@ -149,7 +150,7 @@ function Hospitalization() {
       })
       .then(() => {
         form.reset();
-        window.location.href = "/";
+        //window.location.href = "/";
       });
   };
 
@@ -169,7 +170,8 @@ function Hospitalization() {
         diagnose: form.values.diagnose,
       })
       .then(() => {
-        window.location.href = "/";
+        form.reset();
+        //window.location.href = "/";
       });
   };
 
@@ -381,16 +383,24 @@ function Hospitalization() {
               {...form.getInputProps("description")}
             />
 
-            {status === 1 && (
-              <Button
-                onClick={sendReport}
-                className="w-1/5 m-auto text-xl bg-blue-400 hover:-translate-y-1 hover:shadow-md transition-all duration-300 "
-                type="submit"
-              >
-                Odoslať
-              </Button>
-            )}
-
+            {/* {status === 1 && ( */}
+            <Button
+              onClick={
+                status === 1
+                  ? sendReport
+                  : status === 2
+                  ? sendDiagnosis
+                  : status === 3
+                  ? sendCheckup
+                  : sendAlergy
+              }
+              className="w-1/5 m-auto text-xl bg-blue-400 hover:-translate-y-1 hover:shadow-md transition-all duration-300 "
+              type="submit"
+            >
+              Odoslať
+            </Button>
+            {/* )} */}
+            {/* 
             {status === 2 && (
               <Button
                 onClick={sendDiagnosis}
@@ -419,7 +429,7 @@ function Hospitalization() {
               >
                 Odoslať
               </Button>
-            )}
+            )} */}
           </form>
         </div>
       </div>

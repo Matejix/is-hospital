@@ -4,13 +4,13 @@ import useTokenData from "@/hooks/useTokenData";
 import { DatePicker } from "@mantine/dates";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { PatientsData, DepartmentsData } from "@/types";
+import { PatientsData, TypesOfDepartments } from "@/types";
 import { useLocation } from "react-router";
 
 function Requester() {
   const route = useLocation();
   const [patients, setPatients] = useState<PatientsData[]>([]);
-  const [departments, setDepartments] = useState<DepartmentsData[]>([]);
+  const [departments, setDepartments] = useState<TypesOfDepartments[]>([]);
   const getUsers = () => {
     axios
       .get("http://localhost:3000/requester/getPatients")
@@ -24,7 +24,7 @@ function Requester() {
 
   const getDepartment = () => {
     axios
-      .get("http://localhost:3000/requester/getDepartment")
+      .get("http://localhost:3000/employeeService/getTypesOfDepartments")
       .then((response: any) => {
         //console.log(response);
         setDepartments(response.data);
@@ -56,12 +56,12 @@ function Requester() {
       id_employee: datas.id_employee,
       id_patient: "",
       date: new Date(),
-      department: [],
+      department: "",
       description: "",
     },
     validate: {
       id_patient: (value) => (value.length === 0 ? "Zvoľte pacienta" : null),
-      department: (value) => (!value.length ? "Zvoľte oddelenie" : null),
+      // department: (value) => (!value.length ? "Zvoľte oddelenie" : null),
     },
   });
   //console.log(form);
@@ -129,8 +129,8 @@ function Requester() {
           label="Vyberte oddelenie"
           placeholder="Zvoľte oddelenie"
           data={departments.map((department) => ({
-            value: department.NAZOV,
-            label: department.NAZOV,
+            value: department.ID_TYPU_ODDELENIA,
+            label: department.NAZOV_ODDELENIA,
           }))}
           searchable
           limit={100}
