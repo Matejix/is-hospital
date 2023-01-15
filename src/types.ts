@@ -12,6 +12,37 @@ export interface MedicineData {
   NAZOV: string;
 }
 
+export interface DepartmentsData{
+  NAZOV: string;
+  POPIS: string;
+}
+
+export interface Report_typeData{
+  ID_SPRAVA: string;
+  TYP_SPRAVY: string;
+}
+
+export interface AlergiesData{
+  ID_ALERGIA: string;
+  NAZOV_ALERGIE: string;
+}
+
+export interface DiagnosesData{
+  KOD_DIAGNOZY: string;
+  NAZOV: string;
+}
+
+export interface CheckupsData{
+  ID_VYSETRENIE: string;
+  NAZOV_VYSETRENIA: string;
+}
+
+export interface PerformancesData{
+  NAZOV_VYKONU: string;
+}
+
+
+
 export interface PatientsData {
   MENO: string;
   PRIEZVISKO: string;
@@ -56,14 +87,7 @@ export interface Records {
   ODDELENIE: string;
 }
 
-export interface Requests {
-  ID_ZIADANKY: string;
-  DAT_VYSTAVENIA: Date;
-  POPIS: string;
-  NAZOV_DIAGNOZY: string;
-  VYSTAVIL: string;
-  ODDELENIE: string;
-}
+
 
 export interface Prescriptions {
   PREDPISY: {
